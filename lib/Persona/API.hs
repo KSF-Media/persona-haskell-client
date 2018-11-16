@@ -13,10 +13,11 @@
 -fno-warn-unused-binds -fno-warn-unused-imports -freduction-depth=328 #-}
 
 module Persona.API
-  -- * Client
+  -- * Client and Server
   ( Config(..)
   , PersonaBackend(..)
   , createPersonaClient
+  , runPersonaServer
   , runPersonaClient
   , runPersonaClientWithManager
   , callPersona
@@ -40,6 +41,7 @@ import           Data.Monoid                        ((<>))
 import           Data.Proxy                         (Proxy (..))
 import           Data.Text                          (Text)
 import qualified Data.Text                          as T
+import           Data.UUID                          (UUID)
 import           GHC.Exts                           (IsString (..))
 import           GHC.Generics                       (Generic)
 import           Network.HTTP.Client                (Manager, newManager)
@@ -51,6 +53,7 @@ import           Servant.API
 import           Servant.API.Verbs                  (StdMethod (..), Verb)
 import           Servant.Client                     (ClientEnv, Scheme (Http), ServantError, client,
                                                      mkClientEnv, parseBaseUrl)
+import           Servant.Client.Core                (baseUrlPort, baseUrlHost)
 import           Servant.Client.Internal.HttpClient (ClientM (..))
 import           Servant.Server                     (Handler (..))
 import           Web.HttpApiData
@@ -65,15 +68,8 @@ lookupEither key assocs =
     Nothing -> Left $ "Could not find parameter " <> (T.unpack key) <> " in form data"
     Just value ->
       case parseQueryParam value of
-        Left result  -> Left $ T.unpack result
+        Left  result -> Left $ T.unpack result
         Right result -> Right $ result
-
--- | Servant type-level API, generated from the OpenAPI spec for Persona.
-type PersonaAPI
-    =    "login" :> ReqBody '[JSON] LoginData :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginPost' route
-    :<|> "login" :> "some" :> ReqBody '[JSON] LoginDataSoMe :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSomePost' route
-    :<|> "login" :> "sso" :> ReqBody '[JSON] LoginDataSSO :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSsoPost' route
-    :<|> "users" :> Capture "uuid" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] User -- 'usersUuidGet' route
 
 -- | List of elements parsed from a query.
 newtype QueryList (p :: CollectionFormat) a = QueryList
@@ -125,15 +121,24 @@ formatSeparatedQueryList :: ToHttpApiData a => Char ->  QueryList p a -> Text
 formatSeparatedQueryList char = T.intercalate (T.singleton char) . map toQueryParam . fromQueryList
 
 
+-- | Servant type-level API, generated from the OpenAPI spec for Persona.
+type PersonaAPI
+    =    "login" :> ReqBody '[JSON] LoginData :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginPost' route
+    :<|> "login" :> "some" :> ReqBody '[JSON] LoginDataSoMe :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSomePost' route
+    :<|> "login" :> "sso" :> ReqBody '[JSON] LoginDataSSO :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSsoPost' route
+    :<|> "users" :> Capture "uuid" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] User -- 'usersUuidGet' route
+
+
+-- | Server or client configuration, specifying the host and port to query or serve on.
+data Config = Config
+  { configUrl :: String  -- ^ scheme://hostname:port/path, e.g. "http://localhost:8080/"
+  } deriving (Eq, Ord, Show, Read)
+
 
 -- | Custom exception type for our errors.
 newtype PersonaClientError = PersonaClientError ServantError
   deriving (Show, Exception)
-
 -- | Configuration, specifying the full url of the service.
-data Config = Config
-  { configUrl :: String  -- ^ scheme://hostname:port/path
-  } deriving (Eq, Ord, Show, Read)
 
 
 -- | Backend for Persona.
@@ -181,8 +186,8 @@ runPersonaClient clientConfig cl = do
 
 -- | Run requests in the PersonaClient monad using a custom manager.
 runPersonaClientWithManager :: Manager -> Config -> PersonaClient a -> ExceptT ServantError IO a
-runPersonaClientWithManager manager clientConfig cl = do
-  url <- parseBaseUrl (configUrl clientConfig)
+runPersonaClientWithManager manager Config{..} cl = do
+  url <- parseBaseUrl configUrl
   runClient cl $ mkClientEnv manager url
 
 -- | Like @runClient@, but returns the response or throws
@@ -195,3 +200,20 @@ callPersona env f = do
   case res of
     Left err       -> throwM (PersonaClientError err)
     Right response -> pure response
+
+-- | Run the Persona server at the provided host and port.
+runPersonaServer
+  :: (MonadIO m, MonadThrow m)
+  => Config -> PersonaBackend (ExceptT ServantErr IO) -> m ()
+runPersonaServer Config{..} backend = do
+  url <- parseBaseUrl configUrl
+  let warpSettings = Warp.defaultSettings
+        & Warp.setPort (baseUrlPort url)
+        & Warp.setHost (fromString $ baseUrlHost url)
+  liftIO $ Warp.runSettings warpSettings $ serve (Proxy :: Proxy PersonaAPI) (serverFromBackend backend)
+  where
+    serverFromBackend PersonaBackend{..} =
+      (coerce loginPost :<|>
+       coerce loginSomePost :<|>
+       coerce loginSsoPost :<|>
+       coerce usersUuidGet)

@@ -18,14 +18,16 @@ library
   build-depends:       base
                      , aeson
                      , text
-                     , exceptions
                      , containers
+                     , exceptions
                      , network-uri
+                     , servant
                      , http-api-data
                      , servant
                      , servant-client
                      , servant-client-core
                      , servant-server
+                     , servant
                      , warp
                      , transformers
                      , mtl

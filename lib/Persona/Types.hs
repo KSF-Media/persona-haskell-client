@@ -1,6 +1,6 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE DeriveDataTypeable         #-}
 {-# LANGUAGE DeriveGeneric              #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# OPTIONS_GHC -fno-warn-unused-binds -fno-warn-unused-imports #-}
 
 module Persona.Types (
@@ -8,6 +8,20 @@ module Persona.Types (
   Address (..),
   Campaign (..),
   DescriptionFrequency (..),
+  Inline_response_400 (..),
+  Inline_response_400_invalid_request_body (..),
+  Inline_response_403 (..),
+  Inline_response_403_1 (..),
+  Inline_response_403_1_access_token_expired (..),
+  Inline_response_403_2 (..),
+  Inline_response_403_2_email_address_in_use (..),
+  Inline_response_403_2_email_not_authorized (..),
+  Inline_response_403_2_oauth_failed (..),
+  Inline_response_403_invalid_credentials (..),
+  Inline_response_415 (..),
+  Inline_response_415_unsupported_media_type (..),
+  Inline_response_500 (..),
+  Inline_response_500_internal_server_error (..),
   LoginData (..),
   LoginDataSSO (..),
   LoginDataSoMe (..),
@@ -113,6 +127,233 @@ instance ToSchema DescriptionFrequency where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "descriptionFrequency"
+
+
+-- | 
+data Inline_response_400 = Inline_response_400
+  { inlineResponse400HttpUnderscorecode :: Maybe Int -- ^ 
+  , inlineResponse400InvalidUnderscorerequestUnderscorebody :: Maybe Inline_response_400_invalid_request_body -- ^ 
+  , inlineResponse400HttpUnderscorestatus :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_400 where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse400")
+instance ToJSON Inline_response_400 where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse400")
+instance ToSchema Inline_response_400 where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse400"
+
+
+-- | 
+data Inline_response_400_invalid_request_body = Inline_response_400_invalid_request_body
+  { inlineResponse400InvalidRequestBodyDescription :: Maybe Text -- ^ 
+  , inlineResponse400InvalidRequestBodyMessage :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_400_invalid_request_body where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse400InvalidRequestBody")
+instance ToJSON Inline_response_400_invalid_request_body where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse400InvalidRequestBody")
+instance ToSchema Inline_response_400_invalid_request_body where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse400InvalidRequestBody"
+
+
+-- | 
+data Inline_response_403 = Inline_response_403
+  { inlineResponse403HttpUnderscorecode :: Maybe Int -- ^ 
+  , inlineResponse403HttpUnderscorestatus :: Maybe Text -- ^ 
+  , inlineResponse403InvalidUnderscorecredentials :: Maybe Inline_response_403_invalid_credentials -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_403 where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse403")
+instance ToJSON Inline_response_403 where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse403")
+instance ToSchema Inline_response_403 where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse403"
+
+
+-- | 
+data Inline_response_403_1 = Inline_response_403_1
+  { inlineResponse4031HttpUnderscorecode :: Maybe Int -- ^ 
+  , inlineResponse4031AccessUnderscoretokenUnderscoreexpired :: Maybe Inline_response_403_1_access_token_expired -- ^ 
+  , inlineResponse4031HttpUnderscorestatus :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_403_1 where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4031")
+instance ToJSON Inline_response_403_1 where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4031")
+instance ToSchema Inline_response_403_1 where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse4031"
+
+
+-- | 
+data Inline_response_403_1_access_token_expired = Inline_response_403_1_access_token_expired
+  { inlineResponse4031AccessTokenExpiredDescription :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_403_1_access_token_expired where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4031AccessTokenExpired")
+instance ToJSON Inline_response_403_1_access_token_expired where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4031AccessTokenExpired")
+instance ToSchema Inline_response_403_1_access_token_expired where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse4031AccessTokenExpired"
+
+
+-- | 
+data Inline_response_403_2 = Inline_response_403_2
+  { inlineResponse4032EmailUnderscoreaddressUnderscoreinUnderscoreuse :: Maybe Inline_response_403_2_email_address_in_use -- ^ 
+  , inlineResponse4032HttpUnderscorecode :: Maybe Int -- ^ 
+  , inlineResponse4032OauthUnderscorefailed :: Maybe Inline_response_403_2_oauth_failed -- ^ 
+  , inlineResponse4032HttpUnderscorestatus :: Maybe Text -- ^ 
+  , inlineResponse4032EmailUnderscorenotUnderscoreauthorized :: Maybe Inline_response_403_2_email_not_authorized -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_403_2 where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4032")
+instance ToJSON Inline_response_403_2 where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4032")
+instance ToSchema Inline_response_403_2 where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse4032"
+
+
+-- | 
+data Inline_response_403_2_email_address_in_use = Inline_response_403_2_email_address_in_use
+  { inlineResponse4032EmailAddressInUseMergeUnderscoretoken :: Maybe Text -- ^ 
+  , inlineResponse4032EmailAddressInUseDescription :: Maybe Text -- ^ 
+  , inlineResponse4032EmailAddressInUseExistingUnderscoreprovider :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_403_2_email_address_in_use where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4032EmailAddressInUse")
+instance ToJSON Inline_response_403_2_email_address_in_use where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4032EmailAddressInUse")
+instance ToSchema Inline_response_403_2_email_address_in_use where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse4032EmailAddressInUse"
+
+
+-- | 
+data Inline_response_403_2_email_not_authorized = Inline_response_403_2_email_not_authorized
+  { inlineResponse4032EmailNotAuthorizedDescription :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_403_2_email_not_authorized where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4032EmailNotAuthorized")
+instance ToJSON Inline_response_403_2_email_not_authorized where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4032EmailNotAuthorized")
+instance ToSchema Inline_response_403_2_email_not_authorized where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse4032EmailNotAuthorized"
+
+
+-- | 
+data Inline_response_403_2_oauth_failed = Inline_response_403_2_oauth_failed
+  { inlineResponse4032OauthFailedDescription :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_403_2_oauth_failed where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4032OauthFailed")
+instance ToJSON Inline_response_403_2_oauth_failed where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4032OauthFailed")
+instance ToSchema Inline_response_403_2_oauth_failed where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse4032OauthFailed"
+
+
+-- | 
+data Inline_response_403_invalid_credentials = Inline_response_403_invalid_credentials
+  { inlineResponse403InvalidCredentialsDescription :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_403_invalid_credentials where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse403InvalidCredentials")
+instance ToJSON Inline_response_403_invalid_credentials where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse403InvalidCredentials")
+instance ToSchema Inline_response_403_invalid_credentials where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse403InvalidCredentials"
+
+
+-- | 
+data Inline_response_415 = Inline_response_415
+  { inlineResponse415HttpUnderscorecode :: Maybe Int -- ^ 
+  , inlineResponse415UnsupportedUnderscoremediaUnderscoretype :: Maybe Inline_response_415_unsupported_media_type -- ^ 
+  , inlineResponse415HttpUnderscorestatus :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_415 where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse415")
+instance ToJSON Inline_response_415 where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse415")
+instance ToSchema Inline_response_415 where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse415"
+
+
+-- | 
+data Inline_response_415_unsupported_media_type = Inline_response_415_unsupported_media_type
+  { inlineResponse415UnsupportedMediaTypeDescription :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_415_unsupported_media_type where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse415UnsupportedMediaType")
+instance ToJSON Inline_response_415_unsupported_media_type where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse415UnsupportedMediaType")
+instance ToSchema Inline_response_415_unsupported_media_type where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse415UnsupportedMediaType"
+
+
+-- | 
+data Inline_response_500 = Inline_response_500
+  { inlineResponse500HttpUnderscorecode :: Maybe Int -- ^ 
+  , inlineResponse500HttpUnderscorestatus :: Maybe Text -- ^ 
+  , inlineResponse500InternalUnderscoreserverUnderscoreerror :: Maybe Inline_response_500_internal_server_error -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_500 where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse500")
+instance ToJSON Inline_response_500 where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse500")
+instance ToSchema Inline_response_500 where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse500"
+
+
+-- | 
+data Inline_response_500_internal_server_error = Inline_response_500_internal_server_error
+  { inlineResponse500InternalServerErrorDescription :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Inline_response_500_internal_server_error where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse500InternalServerError")
+instance ToJSON Inline_response_500_internal_server_error where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse500InternalServerError")
+instance ToSchema Inline_response_500_internal_server_error where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "inlineResponse500InternalServerError"
 
 
 -- | 
@@ -346,7 +587,6 @@ instance ToSchema User where
     $ removeFieldLabelPrefix False "user"
 
 
-
 uncapitalize :: String -> String
 uncapitalize (first:rest) = Char.toLower first : rest
 uncapitalize [] = []
@@ -356,9 +596,9 @@ uncapitalize [] = []
 removeFieldLabelPrefix :: Bool -> String -> Options
 removeFieldLabelPrefix forParsing prefix =
   defaultOptions
-  { omitNothingFields  = True
-  , fieldLabelModifier = uncapitalize . fromMaybe (error ("did not find prefix " ++ prefix)) . stripPrefix prefix . replaceSpecialChars
-  }
+    { omitNothingFields  = True
+    , fieldLabelModifier = uncapitalize . fromMaybe (error ("did not find prefix " ++ prefix)) . stripPrefix prefix . replaceSpecialChars
+    }
   where
     replaceSpecialChars field = foldl (&) field (map mkCharReplacement specialChars)
     specialChars =
