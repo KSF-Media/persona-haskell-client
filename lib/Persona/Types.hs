@@ -8,6 +8,7 @@ module Persona.Types (
   Address (..),
   Campaign (..),
   DescriptionFrequency (..),
+  GdprConsent (..),
   Inline_response_400 (..),
   Inline_response_400_invalid_request_body (..),
   Inline_response_403 (..),
@@ -127,6 +128,22 @@ instance ToSchema DescriptionFrequency where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "descriptionFrequency"
+
+
+-- | 
+data GdprConsent = GdprConsent
+  { gdprConsentKey :: Text -- ^ 
+  , gdprConsentVal :: Bool -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON GdprConsent where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "gdprConsent")
+instance ToJSON GdprConsent where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "gdprConsent")
+instance ToSchema GdprConsent where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "gdprConsent"
 
 
 -- | 
