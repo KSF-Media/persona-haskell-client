@@ -524,6 +524,7 @@ data Product = Product
   , productName :: Text -- ^ 
   , productActive :: ActiveDays -- ^ 
   , productNextDelivery :: Maybe Day -- ^ 
+  , productPaper :: Paper -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Product where
