@@ -132,7 +132,8 @@ instance ToSchema DescriptionFrequency where
 
 -- | 
 data GdprConsent = GdprConsent
-  { gdprConsentKey :: Text -- ^ 
+  { gdprConsentBrand :: Text -- ^ 
+  , gdprConsentKey :: Text -- ^ 
   , gdprConsentVal :: Bool -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
@@ -593,6 +594,7 @@ data User = User
   , userAddress :: Maybe Address -- ^ 
   , userCusno :: Text -- ^ 
   , userSubs :: [Subscription] -- ^ 
+  , userConsent :: [GdprConsent] -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON User where
