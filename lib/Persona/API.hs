@@ -127,6 +127,7 @@ type PersonaAPI
     :<|> "login" :> "some" :> ReqBody '[JSON] LoginDataSoMe :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSomePost' route
     :<|> "login" :> "sso" :> ReqBody '[JSON] LoginDataSSO :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSsoPost' route
     :<|> "login" :> Capture "uuid" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] [Value] -- 'loginUuidDelete' route
+    :<|> "users" :> ReqBody '[JSON] NewUser :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersPost' route
     :<|> "users" :> Capture "uuid" UUID :> "gdpr" :> ReqBody '[JSON] [GdprConsent] :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] [Value] -- 'usersUuidGdprPut' route
     :<|> "users" :> Capture "uuid" UUID :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] User -- 'usersUuidGet' route
 
@@ -152,6 +153,7 @@ data PersonaBackend m = PersonaBackend
   , loginSomePost :: LoginDataSoMe -> m LoginResponse{- ^  -}
   , loginSsoPost :: LoginDataSSO -> m LoginResponse{- ^  -}
   , loginUuidDelete :: UUID -> Maybe Text -> m [Value]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersPost :: NewUser -> m LoginResponse{- ^  -}
   , usersUuidGdprPut :: UUID -> [GdprConsent] -> Maybe Text -> m [Value]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidGet :: UUID -> Maybe Text -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   }
@@ -181,6 +183,7 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> loginSomePost) :<|>
      (coerce -> loginSsoPost) :<|>
      (coerce -> loginUuidDelete) :<|>
+     (coerce -> usersPost) :<|>
      (coerce -> usersUuidGdprPut) :<|>
      (coerce -> usersUuidGet)) = client (Proxy :: Proxy PersonaAPI)
 
@@ -223,5 +226,6 @@ runPersonaServer Config{..} backend = do
        coerce loginSomePost :<|>
        coerce loginSsoPost :<|>
        coerce loginUuidDelete :<|>
+       coerce usersPost :<|>
        coerce usersUuidGdprPut :<|>
        coerce usersUuidGet)

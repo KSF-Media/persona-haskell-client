@@ -27,6 +27,7 @@ module Persona.Types (
   LoginDataSSO (..),
   LoginDataSoMe (..),
   LoginResponse (..),
+  NewUser (..),
   Package (..),
   PackageDescription (..),
   PackageOffer (..),
@@ -439,6 +440,29 @@ instance ToSchema LoginResponse where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "loginResponse"
+
+
+-- | 
+data NewUser = NewUser
+  { newUserFirstName :: Text -- ^ 
+  , newUserLastName :: Text -- ^ 
+  , newUserEmailAddress :: Text -- ^ 
+  , newUserPassword :: Text -- ^ 
+  , newUserStreetAddress :: Maybe Text -- ^ 
+  , newUserZipCode :: Maybe Text -- ^ 
+  , newUserCity :: Maybe Text -- ^ 
+  , newUserCountry :: Maybe Text -- ^ 
+  , newUserPhone :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON NewUser where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "newUser")
+instance ToJSON NewUser where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "newUser")
+instance ToSchema NewUser where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "newUser"
 
 
 -- | 
