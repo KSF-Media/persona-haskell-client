@@ -448,6 +448,7 @@ data NewUser = NewUser
   , newUserLastName :: Text -- ^ 
   , newUserEmailAddress :: Text -- ^ 
   , newUserPassword :: Text -- ^ 
+  , newUserConfirmPassword :: Text -- ^ 
   , newUserStreetAddress :: Maybe Text -- ^ 
   , newUserZipCode :: Maybe Text -- ^ 
   , newUserCity :: Maybe Text -- ^ 
