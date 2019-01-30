@@ -36,6 +36,8 @@ module Persona.Types (
   Subscription (..),
   SubscriptionDates (..),
   User (..),
+  UserUpdate (..),
+  UserUpdateAddress (..),
   ) where
 
 import Data.Data (Data)
@@ -630,6 +632,40 @@ instance ToSchema User where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "user"
+
+
+-- | 
+data UserUpdate = UserUpdate
+  { userUpdateFirstName :: Maybe Text -- ^ 
+  , userUpdateLastName :: Maybe Text -- ^ 
+  , userUpdateAddress :: Maybe UserUpdateAddress -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON UserUpdate where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "userUpdate")
+instance ToJSON UserUpdate where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "userUpdate")
+instance ToSchema UserUpdate where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "userUpdate"
+
+
+-- | 
+data UserUpdateAddress = UserUpdateAddress
+  { userUpdateAddressCountryCode :: Text -- ^ 
+  , userUpdateAddressZipCode :: Text -- ^ 
+  , userUpdateAddressStreetAddress :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON UserUpdateAddress where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "userUpdateAddress")
+instance ToJSON UserUpdateAddress where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "userUpdateAddress")
+instance ToSchema UserUpdateAddress where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "userUpdateAddress"
 
 
 uncapitalize :: String -> String

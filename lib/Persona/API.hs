@@ -130,6 +130,7 @@ type PersonaAPI
     :<|> "users" :> ReqBody '[JSON] NewUser :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersPost' route
     :<|> "users" :> Capture "uuid" UUID :> "gdpr" :> ReqBody '[JSON] [GdprConsent] :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidGdprPut' route
     :<|> "users" :> Capture "uuid" UUID :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] User -- 'usersUuidGet' route
+    :<|> "users" :> Capture "uuid" UUID :> ReqBody '[JSON] UserUpdate :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] User -- 'usersUuidPatch' route
 
 
 -- | Server or client configuration, specifying the host and port to query or serve on.
@@ -156,6 +157,7 @@ data PersonaBackend m = PersonaBackend
   , usersPost :: NewUser -> m LoginResponse{- ^  -}
   , usersUuidGdprPut :: UUID -> [GdprConsent] -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidGet :: UUID -> Maybe Text -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidPatch :: UUID -> UserUpdate -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   }
 
 newtype PersonaClient a = PersonaClient
@@ -185,7 +187,8 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> loginUuidDelete) :<|>
      (coerce -> usersPost) :<|>
      (coerce -> usersUuidGdprPut) :<|>
-     (coerce -> usersUuidGet)) = client (Proxy :: Proxy PersonaAPI)
+     (coerce -> usersUuidGet) :<|>
+     (coerce -> usersUuidPatch)) = client (Proxy :: Proxy PersonaAPI)
 
 -- | Run requests in the PersonaClient monad.
 runPersonaClient :: Config -> PersonaClient a -> ExceptT ServantError IO a
@@ -228,4 +231,5 @@ runPersonaServer Config{..} backend = do
        coerce loginUuidDelete :<|>
        coerce usersPost :<|>
        coerce usersUuidGdprPut :<|>
-       coerce usersUuidGet)
+       coerce usersUuidGet :<|>
+       coerce usersUuidPatch)
