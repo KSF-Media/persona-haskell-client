@@ -123,11 +123,13 @@ formatSeparatedQueryList char = T.intercalate (T.singleton char) . map toQueryPa
 
 -- | Servant type-level API, generated from the OpenAPI spec for Persona.
 type PersonaAPI
-    =    "login" :> ReqBody '[JSON] LoginData :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginPost' route
+    =    "entitlements" :> Verb 'GET 200 '[JSON] ((Map.Map String [Text])) -- 'entitlementsGet' route
+    :<|> "login" :> ReqBody '[JSON] LoginData :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginPost' route
     :<|> "login" :> "some" :> ReqBody '[JSON] LoginDataSoMe :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSomePost' route
     :<|> "login" :> "sso" :> ReqBody '[JSON] LoginDataSSO :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSsoPost' route
     :<|> "login" :> Capture "uuid" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] [Value] -- 'loginUuidDelete' route
     :<|> "users" :> ReqBody '[JSON] NewUser :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersPost' route
+    :<|> "users" :> Capture "uuid" UUID :> "entitlement" :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] [Text] -- 'usersUuidEntitlementGet' route
     :<|> "users" :> Capture "uuid" UUID :> "gdpr" :> ReqBody '[JSON] [GdprConsent] :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidGdprPut' route
     :<|> "users" :> Capture "uuid" UUID :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] User -- 'usersUuidGet' route
     :<|> "users" :> Capture "uuid" UUID :> ReqBody '[JSON] UserUpdate :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] User -- 'usersUuidPatch' route
@@ -150,11 +152,13 @@ newtype PersonaClientError = PersonaClientError ServantError
 -- is a backend that executes actions by sending HTTP requests (see @createPersonaClient@). Alternatively, provided
 -- a backend, the API can be served using @runPersonaServer@.
 data PersonaBackend m = PersonaBackend
-  { loginPost :: LoginData -> m LoginResponse{- ^  -}
+  { entitlementsGet :: m ((Map.Map String [Text])){- ^  -}
+  , loginPost :: LoginData -> m LoginResponse{- ^  -}
   , loginSomePost :: LoginDataSoMe -> m LoginResponse{- ^  -}
   , loginSsoPost :: LoginDataSSO -> m LoginResponse{- ^  -}
   , loginUuidDelete :: UUID -> Maybe Text -> m [Value]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersPost :: NewUser -> m LoginResponse{- ^  -}
+  , usersUuidEntitlementGet :: UUID -> Maybe Text -> Maybe Text -> m [Text]{- ^  -}
   , usersUuidGdprPut :: UUID -> [GdprConsent] -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidGet :: UUID -> Maybe Text -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidPatch :: UUID -> UserUpdate -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
@@ -181,11 +185,13 @@ instance MonadIO PersonaClient where
 createPersonaClient :: PersonaBackend PersonaClient
 createPersonaClient = PersonaBackend{..}
   where
-    ((coerce -> loginPost) :<|>
+    ((coerce -> entitlementsGet) :<|>
+     (coerce -> loginPost) :<|>
      (coerce -> loginSomePost) :<|>
      (coerce -> loginSsoPost) :<|>
      (coerce -> loginUuidDelete) :<|>
      (coerce -> usersPost) :<|>
+     (coerce -> usersUuidEntitlementGet) :<|>
      (coerce -> usersUuidGdprPut) :<|>
      (coerce -> usersUuidGet) :<|>
      (coerce -> usersUuidPatch)) = client (Proxy :: Proxy PersonaAPI)
@@ -225,11 +231,13 @@ runPersonaServer Config{..} backend = do
   liftIO $ Warp.runSettings warpSettings $ serve (Proxy :: Proxy PersonaAPI) (serverFromBackend backend)
   where
     serverFromBackend PersonaBackend{..} =
-      (coerce loginPost :<|>
+      (coerce entitlementsGet :<|>
+       coerce loginPost :<|>
        coerce loginSomePost :<|>
        coerce loginSsoPost :<|>
        coerce loginUuidDelete :<|>
        coerce usersPost :<|>
+       coerce usersUuidEntitlementGet :<|>
        coerce usersUuidGdprPut :<|>
        coerce usersUuidGet :<|>
        coerce usersUuidPatch)
