@@ -132,6 +132,7 @@ type PersonaAPI
     :<|> "users" :> Capture "uuid" UUID :> "entitlement" :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] [Text] -- 'usersUuidEntitlementGet' route
     :<|> "users" :> Capture "uuid" UUID :> "gdpr" :> ReqBody '[JSON] [GdprConsent] :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidGdprPut' route
     :<|> "users" :> Capture "uuid" UUID :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] User -- 'usersUuidGet' route
+    :<|> "users" :> Capture "uuid" UUID :> "legal" :> ReqBody '[JSON] [LegalConsent] :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidLegalPut' route
     :<|> "users" :> Capture "uuid" UUID :> ReqBody '[JSON] UserUpdate :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] User -- 'usersUuidPatch' route
 
 
@@ -161,6 +162,7 @@ data PersonaBackend m = PersonaBackend
   , usersUuidEntitlementGet :: UUID -> Maybe Text -> Maybe Text -> m [Text]{- ^  -}
   , usersUuidGdprPut :: UUID -> [GdprConsent] -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidGet :: UUID -> Maybe Text -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidLegalPut :: UUID -> [LegalConsent] -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidPatch :: UUID -> UserUpdate -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   }
 
@@ -194,6 +196,7 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> usersUuidEntitlementGet) :<|>
      (coerce -> usersUuidGdprPut) :<|>
      (coerce -> usersUuidGet) :<|>
+     (coerce -> usersUuidLegalPut) :<|>
      (coerce -> usersUuidPatch)) = client (Proxy :: Proxy PersonaAPI)
 
 -- | Run requests in the PersonaClient monad.
@@ -240,4 +243,5 @@ runPersonaServer Config{..} backend = do
        coerce usersUuidEntitlementGet :<|>
        coerce usersUuidGdprPut :<|>
        coerce usersUuidGet :<|>
+       coerce usersUuidLegalPut :<|>
        coerce usersUuidPatch)

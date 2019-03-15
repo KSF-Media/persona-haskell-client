@@ -23,6 +23,7 @@ module Persona.Types (
   Inline_response_415_unsupported_media_type (..),
   Inline_response_500 (..),
   Inline_response_500_internal_server_error (..),
+  LegalConsent (..),
   LoginData (..),
   LoginDataSSO (..),
   LoginDataSoMe (..),
@@ -378,6 +379,23 @@ instance ToSchema Inline_response_500_internal_server_error where
 
 
 -- | 
+data LegalConsent = LegalConsent
+  { legalConsentScreenName :: Text -- ^ 
+  , legalConsentConsentId :: Text -- ^ 
+  , legalConsentDateAccepted :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON LegalConsent where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "legalConsent")
+instance ToJSON LegalConsent where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "legalConsent")
+instance ToSchema LegalConsent where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "legalConsent"
+
+
+-- | 
 data LoginData = LoginData
   { loginDataUsername :: Text -- ^ 
   , loginDataPassword :: Text -- ^ 
@@ -622,6 +640,7 @@ data User = User
   , userCusno :: Text -- ^ 
   , userSubs :: [Subscription] -- ^ 
   , userConsent :: [GdprConsent] -- ^ 
+  , userLegal :: [LegalConsent] -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON User where
