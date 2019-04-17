@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds                  #-}
+{-# LANGUAGE DeriveDataTypeable         #-}
 {-# LANGUAGE DeriveGeneric              #-}
 {-# LANGUAGE DeriveTraversable          #-}
 {-# LANGUAGE FlexibleContexts           #-}
@@ -35,12 +36,15 @@ import           Control.Monad.IO.Class
 import           Control.Monad.Trans.Reader         (ReaderT (..))
 import           Data.Aeson                         (Value)
 import           Data.Coerce                        (coerce)
+import           Data.Data                          (Data)
 import           Data.Function                      ((&))
 import qualified Data.Map                           as Map
 import           Data.Monoid                        ((<>))
 import           Data.Proxy                         (Proxy (..))
+import           Data.Set                           (Set)
 import           Data.Text                          (Text)
 import qualified Data.Text                          as T
+import           Data.Time
 import           Data.UUID                          (UUID)
 import           GHC.Exts                           (IsString (..))
 import           GHC.Generics                       (Generic)
@@ -56,20 +60,11 @@ import           Servant.Client                     (ClientEnv, Scheme (Http), S
 import           Servant.Client.Core                (baseUrlPort, baseUrlHost)
 import           Servant.Client.Internal.HttpClient (ClientM (..))
 import           Servant.Server                     (Handler (..))
+import           Web.FormUrlEncoded
 import           Web.HttpApiData
 
 
 
-
--- For the form data code generation.
-lookupEither :: FromHttpApiData b => Text -> [(Text, Text)] -> Either String b
-lookupEither key assocs =
-  case lookup key assocs of
-    Nothing -> Left $ "Could not find parameter " <> (T.unpack key) <> " in form data"
-    Just value ->
-      case parseQueryParam value of
-        Left  result -> Left $ T.unpack result
-        Right result -> Right $ result
 
 -- | List of elements parsed from a query.
 newtype QueryList (p :: CollectionFormat) a = QueryList
@@ -134,6 +129,7 @@ type PersonaAPI
     :<|> "users" :> Capture "uuid" UUID :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] User -- 'usersUuidGet' route
     :<|> "users" :> Capture "uuid" UUID :> "legal" :> ReqBody '[JSON] [LegalConsent] :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidLegalPut' route
     :<|> "users" :> Capture "uuid" UUID :> ReqBody '[JSON] UserUpdate :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] User -- 'usersUuidPatch' route
+    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "pause" :> ReqBody '[JSON] SubscriptionPauseDates :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [PausedSubscription] -- 'usersUuidSubscriptionsSubsnoPausePost' route
 
 
 -- | Server or client configuration, specifying the host and port to query or serve on.
@@ -164,6 +160,7 @@ data PersonaBackend m = PersonaBackend
   , usersUuidGet :: UUID -> Maybe Text -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidLegalPut :: UUID -> [LegalConsent] -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidPatch :: UUID -> UserUpdate -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidSubscriptionsSubsnoPausePost :: UUID -> Int -> SubscriptionPauseDates -> Maybe Text -> m [PausedSubscription]{- ^  -}
   }
 
 newtype PersonaClient a = PersonaClient
@@ -197,7 +194,8 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> usersUuidGdprPut) :<|>
      (coerce -> usersUuidGet) :<|>
      (coerce -> usersUuidLegalPut) :<|>
-     (coerce -> usersUuidPatch)) = client (Proxy :: Proxy PersonaAPI)
+     (coerce -> usersUuidPatch) :<|>
+     (coerce -> usersUuidSubscriptionsSubsnoPausePost)) = client (Proxy :: Proxy PersonaAPI)
 
 -- | Run requests in the PersonaClient monad.
 runPersonaClient :: Config -> PersonaClient a -> ExceptT ServantError IO a
@@ -244,4 +242,5 @@ runPersonaServer Config{..} backend = do
        coerce usersUuidGdprPut :<|>
        coerce usersUuidGet :<|>
        coerce usersUuidLegalPut :<|>
-       coerce usersUuidPatch)
+       coerce usersUuidPatch :<|>
+       coerce usersUuidSubscriptionsSubsnoPausePost)
