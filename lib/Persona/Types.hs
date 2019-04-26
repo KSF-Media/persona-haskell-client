@@ -569,19 +569,19 @@ instance ToSchema Paper where
 
 -- | 
 data PausedSubscription = PausedSubscription
-  { pausedSubscriptionPausedSubscriptionSubsno :: Int -- ^ 
-  , pausedSubscriptionPausedSubscriptionSleepStartDate :: Day -- ^ 
-  , pausedSubscriptionPausedSubscriptionSleepEndDate :: Day -- ^ 
-  , pausedSubscriptionPausedSubscriptionCreditType :: Text -- ^ 
-  , pausedSubscriptionPausedSubscriptionCreditAmount :: Int -- ^ 
-  , pausedSubscriptionPausedSubscriptionSleepType :: Text -- ^ 
-  , pausedSubscriptionPausedSubscriptionCredited :: Bool -- ^ 
-  , pausedSubscriptionPausedSubscriptionCreditInvno :: Int -- ^ 
-  , pausedSubscriptionPausedSubscriptionBookingDate :: Text -- ^ 
-  , pausedSubscriptionPausedSubscriptionAllowWebpaper :: Bool -- ^ 
-  , pausedSubscriptionPausedSubscriptionReceiveType :: Text -- ^ 
-  , pausedSubscriptionPausedSubscriptionConfirmStatus :: Text -- ^ 
-  , pausedSubscriptionPausedSubscriptionStampUser :: Text -- ^ 
+  { pausedSubscriptionSubsno :: Int -- ^ 
+  , pausedSubscriptionSleepStartdate :: Day -- ^ 
+  , pausedSubscriptionSleepEndDate :: Day -- ^ 
+  , pausedSubscriptionCreditType :: Text -- ^ 
+  , pausedSubscriptionCreditAmount :: Int -- ^ 
+  , pausedSubscriptionSleepType :: Text -- ^ 
+  , pausedSubscriptionCredited :: Bool -- ^ 
+  , pausedSubscriptionCreditInvno :: Int -- ^ 
+  , pausedSubscriptionBookingDate :: Text -- ^ 
+  , pausedSubscriptionAllowWebpaper :: Bool -- ^ 
+  , pausedSubscriptionReceiveType :: Text -- ^ 
+  , pausedSubscriptionConfirmStatus :: Text -- ^ 
+  , pausedSubscriptionStampUser :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PausedSubscription where
