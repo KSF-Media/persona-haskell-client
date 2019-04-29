@@ -494,6 +494,7 @@ data Package = Package
   { packageId :: Text -- ^ 
   , packageName :: Text -- ^ 
   , packagePaper :: Paper -- ^ 
+  , packageDigitalOnly :: Bool -- ^ 
   , packageProducts :: [Product] -- ^ 
   , packageOffers :: [PackageOffer] -- ^ 
   , packageCampaigns :: [Campaign] -- ^ 
@@ -569,19 +570,8 @@ instance ToSchema Paper where
 
 -- | 
 data PausedSubscription = PausedSubscription
-  { pausedSubscriptionSubsno :: Int -- ^ 
-  , pausedSubscriptionSleepStartdate :: Day -- ^ 
-  , pausedSubscriptionSleepEndDate :: Day -- ^ 
-  , pausedSubscriptionCreditType :: Text -- ^ 
-  , pausedSubscriptionCreditAmount :: Int -- ^ 
-  , pausedSubscriptionSleepType :: Text -- ^ 
-  , pausedSubscriptionCredited :: Bool -- ^ 
-  , pausedSubscriptionCreditInvno :: Int -- ^ 
-  , pausedSubscriptionBookingDate :: Text -- ^ 
-  , pausedSubscriptionAllowWebpaper :: Bool -- ^ 
-  , pausedSubscriptionReceiveType :: Text -- ^ 
-  , pausedSubscriptionConfirmStatus :: Text -- ^ 
-  , pausedSubscriptionStampUser :: Text -- ^ 
+  { pausedSubscriptionStartDate :: Day -- ^ 
+  , pausedSubscriptionEndDate :: Day -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PausedSubscription where
@@ -601,6 +591,7 @@ data Product = Product
   , productActive :: ActiveDays -- ^ 
   , productNextDelivery :: Maybe Day -- ^ 
   , productPaper :: Paper -- ^ 
+  , productDigital :: Bool -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Product where
@@ -626,6 +617,7 @@ data Subscription = Subscription
   , subscriptionDates :: SubscriptionDates -- ^ 
   , subscriptionExtsubsexists :: Bool -- ^ 
   , subscriptionCampaign :: Maybe Campaign -- ^ 
+  , subscriptionPaused :: Maybe [PausedSubscription] -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Subscription where
