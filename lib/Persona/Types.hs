@@ -571,7 +571,7 @@ instance ToSchema Paper where
 -- | 
 data PausedSubscription = PausedSubscription
   { pausedSubscriptionStartDate :: Day -- ^ 
-  , pausedSubscriptionEndDate :: Day -- ^ 
+  , pausedSubscriptionEndDate :: Maybe Day -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PausedSubscription where
