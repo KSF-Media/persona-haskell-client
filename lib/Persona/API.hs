@@ -52,10 +52,10 @@ import           Network.HTTP.Client                (Manager, newManager)
 import           Network.HTTP.Client.TLS            (tlsManagerSettings)
 import           Network.HTTP.Types.Method          (methodOptions)
 import qualified Network.Wai.Handler.Warp           as Warp
-import           Servant                            (ServantErr, serve)
+import           Servant                            (ServerError, serve)
 import           Servant.API
 import           Servant.API.Verbs                  (StdMethod (..), Verb)
-import           Servant.Client                     (ClientEnv, Scheme (Http), ServantError, client,
+import           Servant.Client                     (ClientEnv, Scheme (Http), ClientError, client,
                                                      mkClientEnv, parseBaseUrl)
 import           Servant.Client.Core                (baseUrlPort, baseUrlHost)
 import           Servant.Client.Internal.HttpClient (ClientM (..))
@@ -139,7 +139,7 @@ data Config = Config
 
 
 -- | Custom exception type for our errors.
-newtype PersonaClientError = PersonaClientError ServantError
+newtype PersonaClientError = PersonaClientError ClientError
   deriving (Show, Exception)
 -- | Configuration, specifying the full url of the service.
 
@@ -164,7 +164,7 @@ data PersonaBackend m = PersonaBackend
   }
 
 newtype PersonaClient a = PersonaClient
-  { runClient :: ClientEnv -> ExceptT ServantError IO a
+  { runClient :: ClientEnv -> ExceptT ClientError IO a
   } deriving Functor
 
 instance Applicative PersonaClient where
@@ -198,13 +198,13 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> usersUuidSubscriptionsSubsnoPausePost)) = client (Proxy :: Proxy PersonaAPI)
 
 -- | Run requests in the PersonaClient monad.
-runPersonaClient :: Config -> PersonaClient a -> ExceptT ServantError IO a
+runPersonaClient :: Config -> PersonaClient a -> ExceptT ClientError IO a
 runPersonaClient clientConfig cl = do
   manager <- liftIO $ newManager tlsManagerSettings
   runPersonaClientWithManager manager clientConfig cl
 
 -- | Run requests in the PersonaClient monad using a custom manager.
-runPersonaClientWithManager :: Manager -> Config -> PersonaClient a -> ExceptT ServantError IO a
+runPersonaClientWithManager :: Manager -> Config -> PersonaClient a -> ExceptT ClientError IO a
 runPersonaClientWithManager manager Config{..} cl = do
   url <- parseBaseUrl configUrl
   runClient cl $ mkClientEnv manager url
@@ -223,7 +223,7 @@ callPersona env f = do
 -- | Run the Persona server at the provided host and port.
 runPersonaServer
   :: (MonadIO m, MonadThrow m)
-  => Config -> PersonaBackend (ExceptT ServantErr IO) -> m ()
+  => Config -> PersonaBackend (ExceptT ServerError IO) -> m ()
 runPersonaServer Config{..} backend = do
   url <- parseBaseUrl configUrl
   let warpSettings = Warp.defaultSettings
