@@ -7,6 +7,7 @@ module Persona.Types (
   ActiveDays (..),
   Address (..),
   Campaign (..),
+  DeliveryAddress (..),
   DescriptionFrequency (..),
   GdprConsent (..),
   InlineResponse400 (..),
@@ -34,10 +35,12 @@ module Persona.Types (
   PackageOffer (..),
   Paper (..),
   PausedSubscription (..),
+  PendingAddressChange (..),
   Product (..),
   Subscription (..),
   SubscriptionDates (..),
   SubscriptionPauseDates (..),
+  TemporaryAddressChange (..),
   User (..),
   UserUpdate (..),
   UserUpdateAddress (..),
@@ -119,6 +122,23 @@ instance ToSchema Campaign where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "campaign"
+
+
+-- | 
+data DeliveryAddress = DeliveryAddress
+  { deliveryAddressStreetAddress :: Text -- ^ 
+  , deliveryAddressZipcode :: Text -- ^ 
+  , deliveryAddressCity :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON DeliveryAddress where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "deliveryAddress")
+instance ToJSON DeliveryAddress where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "deliveryAddress")
+instance ToSchema DeliveryAddress where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "deliveryAddress"
 
 
 -- | 
@@ -585,6 +605,23 @@ instance ToSchema PausedSubscription where
 
 
 -- | 
+data PendingAddressChange = PendingAddressChange
+  { pendingAddressChangeAddress :: DeliveryAddress -- ^ 
+  , pendingAddressChangeStartDate :: Day -- ^ 
+  , pendingAddressChangeEndDate :: Day -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON PendingAddressChange where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "pendingAddressChange")
+instance ToJSON PendingAddressChange where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "pendingAddressChange")
+instance ToSchema PendingAddressChange where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "pendingAddressChange"
+
+
+-- | 
 data Product = Product
   { productId :: Text -- ^ 
   , productName :: Text -- ^ 
@@ -618,6 +655,8 @@ data Subscription = Subscription
   , subscriptionExtsubsexists :: Bool -- ^ 
   , subscriptionCampaign :: Maybe Campaign -- ^ 
   , subscriptionPaused :: Maybe [PausedSubscription] -- ^ 
+  , subscriptionDeliveryAddress :: Maybe DeliveryAddress -- ^ 
+  , subscriptionPendingAddressChanges :: Maybe [PendingAddressChange] -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Subscription where
@@ -666,6 +705,24 @@ instance ToSchema SubscriptionPauseDates where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "subscriptionPauseDates"
+
+
+-- | 
+data TemporaryAddressChange = TemporaryAddressChange
+  { temporaryAddressChangeZipCode :: Text -- ^ 
+  , temporaryAddressChangeStreetAddress :: Text -- ^ 
+  , temporaryAddressChangeStartDate :: Day -- ^ 
+  , temporaryAddressChangeEndDate :: Day -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON TemporaryAddressChange where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "temporaryAddressChange")
+instance ToJSON TemporaryAddressChange where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "temporaryAddressChange")
+instance ToSchema TemporaryAddressChange where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "temporaryAddressChange"
 
 
 -- | 
