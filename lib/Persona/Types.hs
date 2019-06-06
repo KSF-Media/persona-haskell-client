@@ -128,7 +128,7 @@ instance ToSchema Campaign where
 data DeliveryAddress = DeliveryAddress
   { deliveryAddressStreetAddress :: Text -- ^ 
   , deliveryAddressZipcode :: Text -- ^ 
-  , deliveryAddressCity :: Text -- ^ 
+  , deliveryAddressCity :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON DeliveryAddress where
@@ -609,6 +609,7 @@ data PendingAddressChange = PendingAddressChange
   { pendingAddressChangeAddress :: DeliveryAddress -- ^ 
   , pendingAddressChangeStartDate :: Day -- ^ 
   , pendingAddressChangeEndDate :: Day -- ^ 
+  , pendingAddressChangeType :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PendingAddressChange where
