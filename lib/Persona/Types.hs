@@ -737,6 +737,7 @@ data User = User
   , userSubs :: [Subscription] -- ^ 
   , userConsent :: [GdprConsent] -- ^ 
   , userLegal :: [LegalConsent] -- ^ 
+  , userPendingAddressChanges :: Maybe [PendingAddressChange] -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON User where
