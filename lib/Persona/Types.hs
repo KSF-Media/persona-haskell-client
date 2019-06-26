@@ -126,7 +126,7 @@ instance ToSchema Campaign where
 
 -- | 
 data DeliveryAddress = DeliveryAddress
-  { deliveryAddressStreetAddress :: Text -- ^ 
+  { deliveryAddressStreetAddress :: Maybe Text -- ^ 
   , deliveryAddressZipcode :: Text -- ^ 
   , deliveryAddressCity :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
