@@ -610,6 +610,7 @@ data PendingAddressChange = PendingAddressChange
   , pendingAddressChangeStartDate :: Day -- ^ 
   , pendingAddressChangeEndDate :: Day -- ^ 
   , pendingAddressChangeType :: Text -- ^ 
+  , pendingAddressChangeTemporaryName :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PendingAddressChange where
@@ -714,6 +715,7 @@ data TemporaryAddressChange = TemporaryAddressChange
   , temporaryAddressChangeStreetAddress :: Text -- ^ 
   , temporaryAddressChangeStartDate :: Day -- ^ 
   , temporaryAddressChangeEndDate :: Day -- ^ 
+  , temporaryAddressChangeTemporaryName :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON TemporaryAddressChange where
