@@ -129,6 +129,7 @@ data DeliveryAddress = DeliveryAddress
   { deliveryAddressStreetAddress :: Maybe Text -- ^ 
   , deliveryAddressZipcode :: Text -- ^ 
   , deliveryAddressCity :: Maybe Text -- ^ 
+  , deliveryAddressTemporaryName :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON DeliveryAddress where
@@ -610,7 +611,6 @@ data PendingAddressChange = PendingAddressChange
   , pendingAddressChangeStartDate :: Day -- ^ 
   , pendingAddressChangeEndDate :: Day -- ^ 
   , pendingAddressChangeType :: Text -- ^ 
-  , pendingAddressChangeTemporaryName :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PendingAddressChange where
@@ -659,6 +659,8 @@ data Subscription = Subscription
   , subscriptionPaused :: Maybe [PausedSubscription] -- ^ 
   , subscriptionDeliveryAddress :: Maybe DeliveryAddress -- ^ 
   , subscriptionPendingAddressChanges :: Maybe [PendingAddressChange] -- ^ 
+  , subscriptionOrderNumber :: Maybe Text -- ^ 
+  , subscriptionPaymentMethod :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Subscription where
