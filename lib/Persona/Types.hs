@@ -7,8 +7,11 @@ module Persona.Types (
   ActiveDays (..),
   Address (..),
   Campaign (..),
+  CodeForTokenData (..),
   DeliveryAddress (..),
   DescriptionFrequency (..),
+  ForgotPasswordData (..),
+  ForgotPasswordResponse (..),
   GdprConsent (..),
   InlineResponse400 (..),
   InlineResponse400InvalidRequestBody (..),
@@ -41,6 +44,8 @@ module Persona.Types (
   SubscriptionDates (..),
   SubscriptionPauseDates (..),
   TemporaryAddressChange (..),
+  TokenResponse (..),
+  UpdatePasswordData (..),
   User (..),
   UserUpdate (..),
   UserUpdateAddress (..),
@@ -125,6 +130,21 @@ instance ToSchema Campaign where
 
 
 -- | 
+data CodeForTokenData = CodeForTokenData
+  { codeForTokenDataCode :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON CodeForTokenData where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "codeForTokenData")
+instance ToJSON CodeForTokenData where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "codeForTokenData")
+instance ToSchema CodeForTokenData where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "codeForTokenData"
+
+
+-- | 
 data DeliveryAddress = DeliveryAddress
   { deliveryAddressStreetAddress :: Maybe Text -- ^ 
   , deliveryAddressZipcode :: Text -- ^ 
@@ -156,6 +176,36 @@ instance ToSchema DescriptionFrequency where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "descriptionFrequency"
+
+
+-- | 
+data ForgotPasswordData = ForgotPasswordData
+  { forgotPasswordDataEmail :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON ForgotPasswordData where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "forgotPasswordData")
+instance ToJSON ForgotPasswordData where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "forgotPasswordData")
+instance ToSchema ForgotPasswordData where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "forgotPasswordData"
+
+
+-- | 
+data ForgotPasswordResponse = ForgotPasswordResponse
+  { forgotPasswordResponseStatus :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON ForgotPasswordResponse where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "forgotPasswordResponse")
+instance ToJSON ForgotPasswordResponse where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "forgotPasswordResponse")
+instance ToSchema ForgotPasswordResponse where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "forgotPasswordResponse"
 
 
 -- | 
@@ -728,6 +778,39 @@ instance ToSchema TemporaryAddressChange where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "temporaryAddressChange"
+
+
+-- | 
+data TokenResponse = TokenResponse
+  { tokenResponseAccessUnderscoretoken :: Text -- ^ 
+  , tokenResponseStatus :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON TokenResponse where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "tokenResponse")
+instance ToJSON TokenResponse where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "tokenResponse")
+instance ToSchema TokenResponse where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "tokenResponse"
+
+
+-- | 
+data UpdatePasswordData = UpdatePasswordData
+  { updatePasswordDataPassword :: Text -- ^ 
+  , updatePasswordDataPasswordUnderscoreconfirm :: Text -- ^ 
+  , updatePasswordDataToken :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON UpdatePasswordData where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "updatePasswordData")
+instance ToJSON UpdatePasswordData where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "updatePasswordData")
+instance ToSchema UpdatePasswordData where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "updatePasswordData"
 
 
 -- | 
