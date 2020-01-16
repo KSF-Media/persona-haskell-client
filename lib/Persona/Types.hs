@@ -765,6 +765,7 @@ instance ToSchema SubscriptionPauseDates where
 data TemporaryAddressChange = TemporaryAddressChange
   { temporaryAddressChangeZipCode :: Text -- ^ 
   , temporaryAddressChangeStreetAddress :: Text -- ^ 
+  , temporaryAddressChangeCountryCode :: Text -- ^ 
   , temporaryAddressChangeStartDate :: Day -- ^ 
   , temporaryAddressChangeEndDate :: Day -- ^ 
   , temporaryAddressChangeTemporaryName :: Maybe Text -- ^ 
