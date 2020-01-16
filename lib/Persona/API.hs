@@ -121,6 +121,7 @@ type PersonaAPI
     =    "account" :> "codeForToken" :> ReqBody '[JSON] CodeForTokenData :> Verb 'POST 200 '[JSON] TokenResponse -- 'accountCodeForTokenPost' route
     :<|> "account" :> "forgotPass" :> ReqBody '[JSON] ForgotPasswordData :> Verb 'POST 200 '[JSON] ForgotPasswordResponse -- 'accountForgotPassPost' route
     :<|> "account" :> "resetForgottenPassword" :> ReqBody '[JSON] UpdatePasswordData :> Verb 'POST 200 '[JSON] ForgotPasswordResponse -- 'accountResetForgottenPasswordPost' route
+    :<|> "entitlements" :> "allow" :> ReqBody '[JSON] GlobalEntitlementAccess :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowPost' route
     :<|> "entitlements" :> Verb 'GET 200 '[JSON] ((Map.Map String [Text])) -- 'entitlementsGet' route
     :<|> "login" :> ReqBody '[JSON] LoginData :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginPost' route
     :<|> "login" :> "some" :> ReqBody '[JSON] LoginDataSoMe :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSomePost' route
@@ -156,6 +157,7 @@ data PersonaBackend m = PersonaBackend
   { accountCodeForTokenPost :: CodeForTokenData -> m TokenResponse{- ^  -}
   , accountForgotPassPost :: ForgotPasswordData -> m ForgotPasswordResponse{- ^  -}
   , accountResetForgottenPasswordPost :: UpdatePasswordData -> m ForgotPasswordResponse{- ^  -}
+  , entitlementsAllowPost :: GlobalEntitlementAccess -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsGet :: m ((Map.Map String [Text])){- ^  -}
   , loginPost :: LoginData -> m LoginResponse{- ^  -}
   , loginSomePost :: LoginDataSoMe -> m LoginResponse{- ^  -}
@@ -195,6 +197,7 @@ createPersonaClient = PersonaBackend{..}
     ((coerce -> accountCodeForTokenPost) :<|>
      (coerce -> accountForgotPassPost) :<|>
      (coerce -> accountResetForgottenPasswordPost) :<|>
+     (coerce -> entitlementsAllowPost) :<|>
      (coerce -> entitlementsGet) :<|>
      (coerce -> loginPost) :<|>
      (coerce -> loginSomePost) :<|>
@@ -247,6 +250,7 @@ runPersonaServer Config{..} backend = do
       (coerce accountCodeForTokenPost :<|>
        coerce accountForgotPassPost :<|>
        coerce accountResetForgottenPasswordPost :<|>
+       coerce entitlementsAllowPost :<|>
        coerce entitlementsGet :<|>
        coerce loginPost :<|>
        coerce loginSomePost :<|>
