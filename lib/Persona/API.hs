@@ -135,6 +135,7 @@ type PersonaAPI
     :<|> "users" :> Capture "uuid" UUID :> ReqBody '[JSON] UserUpdate :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] User -- 'usersUuidPatch' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] TemporaryAddressChange :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangePost' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "pause" :> ReqBody '[JSON] SubscriptionPauseDates :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoPausePost' route
+    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "reclamation" :> ReqBody '[JSON] NewDeliveryReclamation :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] DeliveryReclamation -- 'usersUuidSubscriptionsSubsnoReclamationPost' route
 
 
 -- | Server or client configuration, specifying the host and port to query or serve on.
@@ -171,6 +172,7 @@ data PersonaBackend m = PersonaBackend
   , usersUuidPatch :: UUID -> UserUpdate -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidSubscriptionsSubsnoAddressChangePost :: UUID -> Int -> TemporaryAddressChange -> Maybe Text -> m Subscription{- ^  -}
   , usersUuidSubscriptionsSubsnoPausePost :: UUID -> Int -> SubscriptionPauseDates -> Maybe Text -> m Subscription{- ^  -}
+  , usersUuidSubscriptionsSubsnoReclamationPost :: UUID -> Int -> NewDeliveryReclamation -> Maybe Text -> m DeliveryReclamation{- ^  -}
   }
 
 newtype PersonaClient a = PersonaClient
@@ -210,7 +212,8 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> usersUuidLegalPut) :<|>
      (coerce -> usersUuidPatch) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoAddressChangePost) :<|>
-     (coerce -> usersUuidSubscriptionsSubsnoPausePost)) = client (Proxy :: Proxy PersonaAPI)
+     (coerce -> usersUuidSubscriptionsSubsnoPausePost) :<|>
+     (coerce -> usersUuidSubscriptionsSubsnoReclamationPost)) = client (Proxy :: Proxy PersonaAPI)
 
 -- | Run requests in the PersonaClient monad.
 runPersonaClient :: Config -> PersonaClient a -> ExceptT ClientError IO a
@@ -263,4 +266,5 @@ runPersonaServer Config{..} backend = do
        coerce usersUuidLegalPut :<|>
        coerce usersUuidPatch :<|>
        coerce usersUuidSubscriptionsSubsnoAddressChangePost :<|>
-       coerce usersUuidSubscriptionsSubsnoPausePost)
+       coerce usersUuidSubscriptionsSubsnoPausePost :<|>
+       coerce usersUuidSubscriptionsSubsnoReclamationPost)

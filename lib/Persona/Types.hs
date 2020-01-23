@@ -9,6 +9,7 @@ module Persona.Types (
   Campaign (..),
   CodeForTokenData (..),
   DeliveryAddress (..),
+  DeliveryReclamation (..),
   DescriptionFrequency (..),
   ForgotPasswordData (..),
   ForgotPasswordResponse (..),
@@ -33,6 +34,7 @@ module Persona.Types (
   LoginDataSSO (..),
   LoginDataSoMe (..),
   LoginResponse (..),
+  NewDeliveryReclamation (..),
   NewUser (..),
   Package (..),
   PackageDescription (..),
@@ -161,6 +163,27 @@ instance ToSchema DeliveryAddress where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "deliveryAddress"
+
+
+-- | 
+data DeliveryReclamation = DeliveryReclamation
+  { deliveryReclamationNumber :: Text -- ^ 
+  , deliveryReclamationCustomerNumber :: Int -- ^ 
+  , deliveryReclamationSubscriptionNumber :: Int -- ^ 
+  , deliveryReclamationDate :: Day -- ^ 
+  , deliveryReclamationPublicationDate :: Day -- ^ 
+  , deliveryReclamationClaim :: Text -- ^ 
+  , deliveryReclamationStatus :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON DeliveryReclamation where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "deliveryReclamation")
+instance ToJSON DeliveryReclamation where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "deliveryReclamation")
+instance ToSchema DeliveryReclamation where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "deliveryReclamation"
 
 
 -- | 
@@ -552,6 +575,22 @@ instance ToSchema LoginResponse where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "loginResponse"
+
+
+-- | 
+data NewDeliveryReclamation = NewDeliveryReclamation
+  { newDeliveryReclamationPublicationDate :: Day -- ^ 
+  , newDeliveryReclamationClaim :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON NewDeliveryReclamation where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "newDeliveryReclamation")
+instance ToJSON NewDeliveryReclamation where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "newDeliveryReclamation")
+instance ToSchema NewDeliveryReclamation where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "newDeliveryReclamation"
 
 
 -- | 
