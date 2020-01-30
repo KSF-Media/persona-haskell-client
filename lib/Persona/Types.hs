@@ -167,7 +167,7 @@ instance ToSchema DeliveryAddress where
 
 -- | 
 data DeliveryReclamation = DeliveryReclamation
-  { deliveryReclamationNumber :: Text -- ^ 
+  { deliveryReclamationNumber :: Int -- ^ 
   , deliveryReclamationCustomerNumber :: Int -- ^ 
   , deliveryReclamationSubscriptionNumber :: Int -- ^ 
   , deliveryReclamationDate :: Day -- ^ 
