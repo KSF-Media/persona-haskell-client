@@ -10,6 +10,7 @@ module Persona.Types (
   CodeForTokenData (..),
   DeliveryAddress (..),
   DeliveryReclamation (..),
+  DeliveryReclamationUpdate (..),
   DescriptionFrequency (..),
   ForgotPasswordData (..),
   ForgotPasswordResponse (..),
@@ -184,6 +185,21 @@ instance ToSchema DeliveryReclamation where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "deliveryReclamation"
+
+
+-- | 
+data DeliveryReclamationUpdate = DeliveryReclamationUpdate
+  { deliveryReclamationUpdateStatus :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON DeliveryReclamationUpdate where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "deliveryReclamationUpdate")
+instance ToJSON DeliveryReclamationUpdate where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "deliveryReclamationUpdate")
+instance ToSchema DeliveryReclamationUpdate where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "deliveryReclamationUpdate"
 
 
 -- | 
