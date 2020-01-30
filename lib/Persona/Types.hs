@@ -10,6 +10,7 @@ module Persona.Types (
   CodeForTokenData (..),
   DeliveryAddress (..),
   DeliveryReclamation (..),
+  DeliveryReclamationClaim (..),
   DeliveryReclamationUpdate (..),
   DescriptionFrequency (..),
   ForgotPasswordData (..),
@@ -185,6 +186,21 @@ instance ToSchema DeliveryReclamation where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "deliveryReclamation"
+
+
+-- | 
+data DeliveryReclamationClaim = DeliveryReclamationClaim
+  { 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON DeliveryReclamationClaim where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "deliveryReclamationClaim")
+instance ToJSON DeliveryReclamationClaim where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "deliveryReclamationClaim")
+instance ToSchema DeliveryReclamationClaim where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "deliveryReclamationClaim"
 
 
 -- | 
@@ -596,7 +612,7 @@ instance ToSchema LoginResponse where
 -- | 
 data NewDeliveryReclamation = NewDeliveryReclamation
   { newDeliveryReclamationPublicationDate :: Day -- ^ 
-  , newDeliveryReclamationClaim :: Text -- ^ 
+  , newDeliveryReclamationClaim :: DeliveryReclamationClaim -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON NewDeliveryReclamation where
