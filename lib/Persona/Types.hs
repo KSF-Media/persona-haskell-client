@@ -37,6 +37,7 @@ module Persona.Types (
   LoginDataSoMe (..),
   LoginResponse (..),
   NewDeliveryReclamation (..),
+  NewTemporaryUser (..),
   NewUser (..),
   Package (..),
   PackageDescription (..),
@@ -626,17 +627,32 @@ instance ToSchema NewDeliveryReclamation where
 
 
 -- | 
+data NewTemporaryUser = NewTemporaryUser
+  { newTemporaryUserEmailAddress :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON NewTemporaryUser where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "newTemporaryUser")
+instance ToJSON NewTemporaryUser where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "newTemporaryUser")
+instance ToSchema NewTemporaryUser where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "newTemporaryUser"
+
+
+-- | 
 data NewUser = NewUser
-  { newUserFirstName :: Text -- ^ 
-  , newUserLastName :: Text -- ^ 
-  , newUserEmailAddress :: Text -- ^ 
-  , newUserPassword :: Text -- ^ 
-  , newUserConfirmPassword :: Text -- ^ 
-  , newUserStreetAddress :: Maybe Text -- ^ 
-  , newUserZipCode :: Maybe Text -- ^ 
-  , newUserCity :: Maybe Text -- ^ 
-  , newUserCountry :: Maybe Text -- ^ 
-  , newUserPhone :: Maybe Text -- ^ 
+  { newUserNewUserFirstName :: Maybe Text -- ^ 
+  , newUserNewUserLastName :: Maybe Text -- ^ 
+  , newUserNewUserEmailAddress :: Text -- ^ 
+  , newUserNewUserPassword :: Text -- ^ 
+  , newUserNewUserConfirmPassword :: Text -- ^ 
+  , newUserNewUserStreetAddress :: Maybe Text -- ^ 
+  , newUserNewUserZipCode :: Maybe Text -- ^ 
+  , newUserNewUserCity :: Maybe Text -- ^ 
+  , newUserNewUserCountry :: Maybe Text -- ^ 
+  , newUserNewUserPhone :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON NewUser where
