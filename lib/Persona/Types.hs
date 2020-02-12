@@ -13,10 +13,10 @@ module Persona.Types (
   DeliveryReclamationClaim (..),
   DeliveryReclamationUpdate (..),
   DescriptionFrequency (..),
+  EntitlementAccess (..),
   ForgotPasswordData (..),
   ForgotPasswordResponse (..),
   GdprConsent (..),
-  GlobalEntitlementAccess (..),
   InlineResponse400 (..),
   InlineResponse400InvalidRequestBody (..),
   InlineResponse403 (..),
@@ -236,6 +236,23 @@ instance ToSchema DescriptionFrequency where
 
 
 -- | 
+data EntitlementAccess = EntitlementAccess
+  { entitlementAccessUserUuid :: UUID -- ^ 
+  , entitlementAccessStartAt :: Text -- ^ 
+  , entitlementAccessEndAt :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON EntitlementAccess where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "entitlementAccess")
+instance ToJSON EntitlementAccess where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "entitlementAccess")
+instance ToSchema EntitlementAccess where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "entitlementAccess"
+
+
+-- | 
 data ForgotPasswordData = ForgotPasswordData
   { forgotPasswordDataEmail :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
@@ -280,23 +297,6 @@ instance ToSchema GdprConsent where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "gdprConsent"
-
-
--- | 
-data GlobalEntitlementAccess = GlobalEntitlementAccess
-  { globalEntitlementAccessUserUuid :: UUID -- ^ 
-  , globalEntitlementAccessStartAt :: Text -- ^ 
-  , globalEntitlementAccessEndAt :: Text -- ^ 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON GlobalEntitlementAccess where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "globalEntitlementAccess")
-instance ToJSON GlobalEntitlementAccess where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "globalEntitlementAccess")
-instance ToSchema GlobalEntitlementAccess where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "globalEntitlementAccess"
 
 
 -- | 
