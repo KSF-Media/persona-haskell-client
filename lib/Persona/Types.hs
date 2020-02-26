@@ -643,16 +643,16 @@ instance ToSchema NewTemporaryUser where
 
 -- | 
 data NewUser = NewUser
-  { newUserNewUserFirstName :: Maybe Text -- ^ 
-  , newUserNewUserLastName :: Maybe Text -- ^ 
-  , newUserNewUserEmailAddress :: Text -- ^ 
-  , newUserNewUserPassword :: Text -- ^ 
-  , newUserNewUserConfirmPassword :: Text -- ^ 
-  , newUserNewUserStreetAddress :: Maybe Text -- ^ 
-  , newUserNewUserZipCode :: Maybe Text -- ^ 
-  , newUserNewUserCity :: Maybe Text -- ^ 
-  , newUserNewUserCountry :: Maybe Text -- ^ 
-  , newUserNewUserPhone :: Maybe Text -- ^ 
+  { newUserFirstName :: Maybe Text -- ^ 
+  , newUserLastName :: Maybe Text -- ^ 
+  , newUserEmailAddress :: Text -- ^ 
+  , newUserPassword :: Text -- ^ 
+  , newUserConfirmPassword :: Text -- ^ 
+  , newUserStreetAddress :: Maybe Text -- ^ 
+  , newUserZipCode :: Maybe Text -- ^ 
+  , newUserCity :: Maybe Text -- ^ 
+  , newUserCountry :: Maybe Text -- ^ 
+  , newUserPhone :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON NewUser where
