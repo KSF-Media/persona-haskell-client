@@ -15,7 +15,6 @@ module Persona.Types (
   DescriptionFrequency (..),
   EntitlementAccess (..),
   ForgotPasswordData (..),
-  ForgotPasswordResponse (..),
   GdprConsent (..),
   InlineResponse400 (..),
   InlineResponse400InvalidRequestBody (..),
@@ -55,6 +54,7 @@ module Persona.Types (
   User (..),
   UserUpdate (..),
   UserUpdateAddress (..),
+  UserUpdatePassword (..),
   ) where
 
 import Data.Data (Data)
@@ -265,21 +265,6 @@ instance ToSchema ForgotPasswordData where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "forgotPasswordData"
-
-
--- | 
-data ForgotPasswordResponse = ForgotPasswordResponse
-  { forgotPasswordResponseStatus :: Text -- ^ 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON ForgotPasswordResponse where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "forgotPasswordResponse")
-instance ToJSON ForgotPasswordResponse where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "forgotPasswordResponse")
-instance ToSchema ForgotPasswordResponse where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "forgotPasswordResponse"
 
 
 -- | 
@@ -975,6 +960,22 @@ instance ToSchema UserUpdateAddress where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "userUpdateAddress"
+
+
+-- | 
+data UserUpdatePassword = UserUpdatePassword
+  { userUpdatePasswordPassword :: Text -- ^ 
+  , userUpdatePasswordConfirmPassword :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON UserUpdatePassword where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "userUpdatePassword")
+instance ToJSON UserUpdatePassword where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "userUpdatePassword")
+instance ToSchema UserUpdatePassword where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "userUpdatePassword"
 
 
 uncapitalize :: String -> String
