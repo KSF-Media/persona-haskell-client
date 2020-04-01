@@ -614,6 +614,7 @@ instance ToSchema NewDeliveryReclamation where
 -- | 
 data NewTemporaryUser = NewTemporaryUser
   { newTemporaryUserEmailAddress :: Text -- ^ 
+  , newTemporaryUserLegalConsents :: [LegalConsent] -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON NewTemporaryUser where
@@ -638,6 +639,7 @@ data NewUser = NewUser
   , newUserCity :: Maybe Text -- ^ 
   , newUserCountry :: Maybe Text -- ^ 
   , newUserPhone :: Maybe Text -- ^ 
+  , newUserLegalConsents :: [LegalConsent] -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON NewUser where
