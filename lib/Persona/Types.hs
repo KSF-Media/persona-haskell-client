@@ -237,8 +237,7 @@ instance ToSchema DescriptionFrequency where
 
 -- | 
 data EntitlementAccess = EntitlementAccess
-  { entitlementAccessUserUuid :: UUID -- ^ 
-  , entitlementAccessStartAt :: Text -- ^ 
+  { entitlementAccessStartAt :: Text -- ^ 
   , entitlementAccessEndAt :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 

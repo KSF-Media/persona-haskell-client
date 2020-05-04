@@ -122,8 +122,8 @@ type PersonaAPI
     :<|> "account" :> "forgotPass" :> ReqBody '[JSON] ForgotPasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountForgotPassPost' route
     :<|> "account" :> "resetForgottenPassword" :> ReqBody '[JSON] UpdatePasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountResetForgottenPasswordPost' route
     :<|> "admin" :> Capture "uuid" UUID :> Header "Authorization" Text :> Header "AuthUser" UUID :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] User -- 'adminUuidGet' route
-    :<|> "entitlements" :> "allow" :> ReqBody '[JSON] EntitlementAccess :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowPost' route
-    :<|> "entitlements" :> "allow" :> Capture "uuid" UUID :> ReqBody '[JSON] EntitlementAccess :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowUuidPost' route
+    :<|> "entitlements" :> "allow" :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowPost' route
+    :<|> "entitlements" :> "allow" :> Capture "uuid" UUID :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowUuidPost' route
     :<|> "entitlements" :> Verb 'GET 200 '[JSON] ((Map.Map String [Text])) -- 'entitlementsGet' route
     :<|> "login" :> ReqBody '[JSON] LoginData :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginPost' route
     :<|> "login" :> "some" :> ReqBody '[JSON] LoginDataSoMe :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSomePost' route
@@ -165,8 +165,8 @@ data PersonaBackend m = PersonaBackend
   , accountForgotPassPost :: ForgotPasswordData -> m [Value]{- ^  -}
   , accountResetForgottenPasswordPost :: UpdatePasswordData -> m [Value]{- ^  -}
   , adminUuidGet :: UUID -> Maybe Text -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
-  , entitlementsAllowPost :: EntitlementAccess -> Maybe Text -> m [Value]{- ^  -}
-  , entitlementsAllowUuidPost :: UUID -> EntitlementAccess -> Maybe Text -> m [Value]{- ^  -}
+  , entitlementsAllowPost :: EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
+  , entitlementsAllowUuidPost :: UUID -> EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsGet :: m ((Map.Map String [Text])){- ^  -}
   , loginPost :: LoginData -> m LoginResponse{- ^  -}
   , loginSomePost :: LoginDataSoMe -> m LoginResponse{- ^  -}
