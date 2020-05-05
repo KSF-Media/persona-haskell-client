@@ -11,7 +11,6 @@ module Persona.Types (
   DeliveryAddress (..),
   DeliveryReclamation (..),
   DeliveryReclamationClaim (..),
-  DeliveryReclamationUpdate (..),
   DescriptionFrequency (..),
   EntitlementAccess (..),
   ForgotPasswordData (..),
@@ -176,7 +175,6 @@ data DeliveryReclamation = DeliveryReclamation
   , deliveryReclamationDate :: Day -- ^ 
   , deliveryReclamationPublicationDate :: Day -- ^ 
   , deliveryReclamationClaim :: Text -- ^ 
-  , deliveryReclamationStatus :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON DeliveryReclamation where
@@ -202,21 +200,6 @@ instance ToSchema DeliveryReclamationClaim where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "deliveryReclamationClaim"
-
-
--- | 
-data DeliveryReclamationUpdate = DeliveryReclamationUpdate
-  { deliveryReclamationUpdateStatus :: Text -- ^ 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON DeliveryReclamationUpdate where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "deliveryReclamationUpdate")
-instance ToJSON DeliveryReclamationUpdate where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "deliveryReclamationUpdate")
-instance ToSchema DeliveryReclamationUpdate where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "deliveryReclamationUpdate"
 
 
 -- | 
