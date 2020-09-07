@@ -785,6 +785,7 @@ data Subscription = Subscription
   , subscriptionPendingAddressChanges :: Maybe [PendingAddressChange] -- ^ 
   , subscriptionOrderNumber :: Maybe Text -- ^ 
   , subscriptionPaymentMethod :: Maybe Text -- ^ 
+  , subscriptionPaymentMethodId :: Maybe Int -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Subscription where
@@ -841,7 +842,7 @@ data TemporaryAddressChange = TemporaryAddressChange
   , temporaryAddressChangeStreetAddress :: Text -- ^ 
   , temporaryAddressChangeCountryCode :: Text -- ^ 
   , temporaryAddressChangeStartDate :: Day -- ^ 
-  , temporaryAddressChangeEndDate :: Day -- ^ 
+  , temporaryAddressChangeEndDate :: Maybe Day -- ^ 
   , temporaryAddressChangeTemporaryName :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
