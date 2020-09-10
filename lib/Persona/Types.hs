@@ -8,6 +8,7 @@ module Persona.Types (
   Address (..),
   Campaign (..),
   CodeForTokenData (..),
+  DeleteTempAddressChangeDates (..),
   DeliveryAddress (..),
   DeliveryReclamation (..),
   DeliveryReclamationClaim (..),
@@ -147,6 +148,22 @@ instance ToSchema CodeForTokenData where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "codeForTokenData"
+
+
+-- | 
+data DeleteTempAddressChangeDates = DeleteTempAddressChangeDates
+  { deleteTempAddressChangeDatesStartDate :: Day -- ^ 
+  , deleteTempAddressChangeDatesEndDate :: Day -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON DeleteTempAddressChangeDates where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "deleteTempAddressChangeDates")
+instance ToJSON DeleteTempAddressChangeDates where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "deleteTempAddressChangeDates")
+instance ToSchema DeleteTempAddressChangeDates where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "deleteTempAddressChangeDates"
 
 
 -- | 
