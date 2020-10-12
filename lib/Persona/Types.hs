@@ -913,7 +913,7 @@ data User = User
   , userFirstName :: Maybe Text -- ^ 
   , userLastName :: Maybe Text -- ^ 
   , userAddress :: Maybe Address -- ^ 
-  , userCusno :: Text -- ^ 
+  , userCusno :: Int -- ^ 
   , userSubs :: [Subscription] -- ^ 
   , userConsent :: [GdprConsent] -- ^ 
   , userLegal :: [LegalConsent] -- ^ 
