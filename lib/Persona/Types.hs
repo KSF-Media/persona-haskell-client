@@ -43,11 +43,13 @@ module Persona.Types (
   PackageOffer (..),
   Paper (..),
   PausedSubscription (..),
+  Payment (..),
   PendingAddressChange (..),
   Product (..),
   Subscription (..),
   SubscriptionDates (..),
   SubscriptionPauseDates (..),
+  SubscriptionPayments (..),
   TemporaryAddressChange (..),
   TokenResponse (..),
   UpdatePasswordData (..),
@@ -123,6 +125,9 @@ data Campaign = Campaign
   { campaignNo :: Int -- ^ 
   , campaignId :: Text -- ^ 
   , campaignName :: Text -- ^ 
+  , campaignPriceEur :: Double -- ^ 
+  , campaignLength :: Int -- ^ 
+  , campaignLengthUnit :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Campaign where
@@ -747,6 +752,32 @@ instance ToSchema PausedSubscription where
 
 
 -- | 
+data Payment = Payment
+  { paymentInvno :: Int -- ^ 
+  , paymentDate :: Day -- ^ 
+  , paymentDueDate :: Day -- ^ 
+  , paymentExpenses :: Double -- ^ 
+  , paymentInterest :: Double -- ^ 
+  , paymentVat :: Double -- ^ 
+  , paymentAmount :: Double -- ^ 
+  , paymentOpenAmount :: Double -- ^ 
+  , paymentType :: Text -- ^ 
+  , paymentState :: Text -- ^ 
+  , paymentDiscPercent :: Maybe Double -- ^ 
+  , paymentDiscAmount :: Maybe Double -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON Payment where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "payment")
+instance ToJSON Payment where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "payment")
+instance ToSchema Payment where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "payment"
+
+
+-- | 
 data PendingAddressChange = PendingAddressChange
   { pendingAddressChangeAddress :: DeliveryAddress -- ^ 
   , pendingAddressChangeStartDate :: Day -- ^ 
@@ -851,6 +882,25 @@ instance ToSchema SubscriptionPauseDates where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "subscriptionPauseDates"
+
+
+-- | 
+data SubscriptionPayments = SubscriptionPayments
+  { subscriptionPaymentsSubsno :: Int -- ^ 
+  , subscriptionPaymentsName :: Text -- ^ 
+  , subscriptionPaymentsStartDate :: Day -- ^ 
+  , subscriptionPaymentsLastDate :: Day -- ^ 
+  , subscriptionPaymentsPayments :: [Payment] -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON SubscriptionPayments where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "subscriptionPayments")
+instance ToJSON SubscriptionPayments where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "subscriptionPayments")
+instance ToSchema SubscriptionPayments where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "subscriptionPayments"
 
 
 -- | 

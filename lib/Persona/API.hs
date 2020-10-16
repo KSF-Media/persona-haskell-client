@@ -137,6 +137,7 @@ type PersonaAPI
     :<|> "users" :> Capture "uuid" UUID :> "legal" :> ReqBody '[JSON] [LegalConsent] :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidLegalPut' route
     :<|> "users" :> Capture "uuid" UUID :> "password" :> ReqBody '[JSON] UserUpdatePassword :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidPasswordPut' route
     :<|> "users" :> Capture "uuid" UUID :> ReqBody '[JSON] UserUpdate :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] User -- 'usersUuidPatch' route
+    :<|> "users" :> Capture "uuid" UUID :> "payments" :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [SubscriptionPayments] -- 'usersUuidPaymentsGet' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] DeleteTempAddressChangeDates :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangeDelete' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] TemporaryAddressChange :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangePost' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "pause" :> ReqBody '[JSON] SubscriptionPauseDates :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoPausePost' route
@@ -181,6 +182,7 @@ data PersonaBackend m = PersonaBackend
   , usersUuidLegalPut :: UUID -> [LegalConsent] -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidPasswordPut :: UUID -> UserUpdatePassword -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidPatch :: UUID -> UserUpdate -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidPaymentsGet :: UUID -> Maybe Text -> m [SubscriptionPayments]{- ^  -}
   , usersUuidSubscriptionsSubsnoAddressChangeDelete :: UUID -> Int -> DeleteTempAddressChangeDates -> Maybe Text -> m Subscription{- ^  -}
   , usersUuidSubscriptionsSubsnoAddressChangePost :: UUID -> Int -> TemporaryAddressChange -> Maybe Text -> m Subscription{- ^  -}
   , usersUuidSubscriptionsSubsnoPausePost :: UUID -> Int -> SubscriptionPauseDates -> Maybe Text -> m Subscription{- ^  -}
@@ -229,6 +231,7 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> usersUuidLegalPut) :<|>
      (coerce -> usersUuidPasswordPut) :<|>
      (coerce -> usersUuidPatch) :<|>
+     (coerce -> usersUuidPaymentsGet) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoAddressChangeDelete) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoAddressChangePost) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoPausePost) :<|>
@@ -290,6 +293,7 @@ runPersonaServer Config{..} backend = do
        coerce usersUuidLegalPut :<|>
        coerce usersUuidPasswordPut :<|>
        coerce usersUuidPatch :<|>
+       coerce usersUuidPaymentsGet :<|>
        coerce usersUuidSubscriptionsSubsnoAddressChangeDelete :<|>
        coerce usersUuidSubscriptionsSubsnoAddressChangePost :<|>
        coerce usersUuidSubscriptionsSubsnoPausePost :<|>
