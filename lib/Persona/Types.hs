@@ -42,6 +42,7 @@ module Persona.Types (
   PackageDescription (..),
   PackageOffer (..),
   Paper (..),
+  PastTemporaryAddress (..),
   PausedSubscription (..),
   Payment (..),
   PendingAddressChange (..),
@@ -736,6 +737,25 @@ instance ToSchema Paper where
 
 
 -- | 
+data PastTemporaryAddress = PastTemporaryAddress
+  { pastTemporaryAddressCountryCode :: Text -- ^ 
+  , pastTemporaryAddressZipcode :: Text -- ^ 
+  , pastTemporaryAddressCityName :: Maybe Text -- ^ 
+  , pastTemporaryAddressStreet :: Text -- ^ 
+  , pastTemporaryAddressTemporaryName :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON PastTemporaryAddress where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "pastTemporaryAddress")
+instance ToJSON PastTemporaryAddress where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "pastTemporaryAddress")
+instance ToSchema PastTemporaryAddress where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "pastTemporaryAddress"
+
+
+-- | 
 data PausedSubscription = PausedSubscription
   { pausedSubscriptionStartDate :: Day -- ^ 
   , pausedSubscriptionEndDate :: Maybe Day -- ^ 
@@ -968,6 +988,7 @@ data User = User
   , userConsent :: [GdprConsent] -- ^ 
   , userLegal :: [LegalConsent] -- ^ 
   , userPendingAddressChanges :: Maybe [PendingAddressChange] -- ^ 
+  , userPastTemporaryAddresses :: [PastTemporaryAddress] -- ^ 
   , userHasCompletedRegistration :: Bool -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
