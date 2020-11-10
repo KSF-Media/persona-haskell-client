@@ -131,19 +131,19 @@ type PersonaAPI
     :<|> "login" :> Capture "uuid" UUID :> QueryParam "everywhere" Bool :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] [Value] -- 'loginUuidDelete' route
     :<|> "users" :> ReqBody '[JSON] NewUser :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersPost' route
     :<|> "users" :> "temporary" :> ReqBody '[JSON] NewTemporaryUser :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersTemporaryPost' route
-    :<|> "users" :> Capture "uuid" UUID :> "entitlement" :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] [Text] -- 'usersUuidEntitlementGet' route
-    :<|> "users" :> Capture "uuid" UUID :> "gdpr" :> ReqBody '[JSON] [GdprConsent] :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidGdprPut' route
-    :<|> "users" :> Capture "uuid" UUID :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] User -- 'usersUuidGet' route
-    :<|> "users" :> Capture "uuid" UUID :> "legal" :> ReqBody '[JSON] [LegalConsent] :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidLegalPut' route
-    :<|> "users" :> Capture "uuid" UUID :> "password" :> ReqBody '[JSON] UserUpdatePassword :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidPasswordPut' route
-    :<|> "users" :> Capture "uuid" UUID :> ReqBody '[JSON] UserUpdate :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] User -- 'usersUuidPatch' route
-    :<|> "users" :> Capture "uuid" UUID :> "payments" :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [SubscriptionPayments] -- 'usersUuidPaymentsGet' route
-    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] DeleteTempAddressChangeDates :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangeDelete' route
-    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] TemporaryAddressChange :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangePost' route
-    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "pause" :> ReqBody '[JSON] SubscriptionPauseDates :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoPausePost' route
-    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "reclamation" :> ReqBody '[JSON] NewDeliveryReclamation :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] DeliveryReclamation -- 'usersUuidSubscriptionsSubsnoReclamationPost' route
-    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "reclamations" :> Capture "reclaimno" Int :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] DeliveryReclamation -- 'usersUuidSubscriptionsSubsnoReclamationsReclaimnoGet' route
-    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "unpause" :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoUnpausePost' route
+    :<|> "users" :> Capture "uuid" UUID :> "entitlement" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] [Text] -- 'usersUuidEntitlementGet' route
+    :<|> "users" :> Capture "uuid" UUID :> "gdpr" :> ReqBody '[JSON] [GdprConsent] :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidGdprPut' route
+    :<|> "users" :> Capture "uuid" UUID :> Header "AuthUser" UUID :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] User -- 'usersUuidGet' route
+    :<|> "users" :> Capture "uuid" UUID :> "legal" :> ReqBody '[JSON] [LegalConsent] :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidLegalPut' route
+    :<|> "users" :> Capture "uuid" UUID :> "password" :> ReqBody '[JSON] UserUpdatePassword :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidPasswordPut' route
+    :<|> "users" :> Capture "uuid" UUID :> ReqBody '[JSON] UserUpdate :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] User -- 'usersUuidPatch' route
+    :<|> "users" :> Capture "uuid" UUID :> "payments" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [SubscriptionPayments] -- 'usersUuidPaymentsGet' route
+    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] DeleteTempAddressChangeDates :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangeDelete' route
+    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] TemporaryAddressChange :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangePost' route
+    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "pause" :> ReqBody '[JSON] SubscriptionPauseDates :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoPausePost' route
+    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "reclamation" :> ReqBody '[JSON] NewDeliveryReclamation :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] DeliveryReclamation -- 'usersUuidSubscriptionsSubsnoReclamationPost' route
+    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "reclamations" :> Capture "reclaimno" Int :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] DeliveryReclamation -- 'usersUuidSubscriptionsSubsnoReclamationsReclaimnoGet' route
+    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "unpause" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoUnpausePost' route
 
 
 -- | Server or client configuration, specifying the host and port to query or serve on.
@@ -176,19 +176,19 @@ data PersonaBackend m = PersonaBackend
   , loginUuidDelete :: UUID -> Maybe Bool -> Maybe Text -> m [Value]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersPost :: NewUser -> m LoginResponse{- ^  -}
   , usersTemporaryPost :: NewTemporaryUser -> m LoginResponse{- ^  -}
-  , usersUuidEntitlementGet :: UUID -> Maybe Text -> Maybe Text -> m [Text]{- ^  -}
-  , usersUuidGdprPut :: UUID -> [GdprConsent] -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
-  , usersUuidGet :: UUID -> Maybe Text -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
-  , usersUuidLegalPut :: UUID -> [LegalConsent] -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
-  , usersUuidPasswordPut :: UUID -> UserUpdatePassword -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
-  , usersUuidPatch :: UUID -> UserUpdate -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
-  , usersUuidPaymentsGet :: UUID -> Maybe Text -> m [SubscriptionPayments]{- ^  -}
-  , usersUuidSubscriptionsSubsnoAddressChangeDelete :: UUID -> Int -> DeleteTempAddressChangeDates -> Maybe Text -> m Subscription{- ^  -}
-  , usersUuidSubscriptionsSubsnoAddressChangePost :: UUID -> Int -> TemporaryAddressChange -> Maybe Text -> m Subscription{- ^  -}
-  , usersUuidSubscriptionsSubsnoPausePost :: UUID -> Int -> SubscriptionPauseDates -> Maybe Text -> m Subscription{- ^  -}
-  , usersUuidSubscriptionsSubsnoReclamationPost :: UUID -> Int -> NewDeliveryReclamation -> Maybe Text -> m DeliveryReclamation{- ^  -}
-  , usersUuidSubscriptionsSubsnoReclamationsReclaimnoGet :: UUID -> Int -> Int -> Maybe Text -> m DeliveryReclamation{- ^  -}
-  , usersUuidSubscriptionsSubsnoUnpausePost :: UUID -> Int -> Maybe Text -> m Subscription{- ^  -}
+  , usersUuidEntitlementGet :: UUID -> Maybe UUID -> Maybe Text -> Maybe Text -> m [Text]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidGdprPut :: UUID -> [GdprConsent] -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidGet :: UUID -> Maybe UUID -> Maybe Text -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidLegalPut :: UUID -> [LegalConsent] -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidPasswordPut :: UUID -> UserUpdatePassword -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidPatch :: UUID -> UserUpdate -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidPaymentsGet :: UUID -> Maybe UUID -> Maybe Text -> m [SubscriptionPayments]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidSubscriptionsSubsnoAddressChangeDelete :: UUID -> Int -> DeleteTempAddressChangeDates -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidSubscriptionsSubsnoAddressChangePost :: UUID -> Int -> TemporaryAddressChange -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidSubscriptionsSubsnoPausePost :: UUID -> Int -> SubscriptionPauseDates -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidSubscriptionsSubsnoReclamationPost :: UUID -> Int -> NewDeliveryReclamation -> Maybe UUID -> Maybe Text -> m DeliveryReclamation{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidSubscriptionsSubsnoReclamationsReclaimnoGet :: UUID -> Int -> Int -> Maybe UUID -> Maybe Text -> m DeliveryReclamation{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidSubscriptionsSubsnoUnpausePost :: UUID -> Int -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   }
 
 newtype PersonaClient a = PersonaClient
