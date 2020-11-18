@@ -758,7 +758,7 @@ instance ToSchema PastTemporaryAddress where
 -- | 
 data PausedSubscription = PausedSubscription
   { pausedSubscriptionStartDate :: Day -- ^ 
-  , pausedSubscriptionEndDate :: Maybe Day -- ^ 
+  , pausedSubscriptionEndDate :: Day -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PausedSubscription where
