@@ -588,6 +588,7 @@ data LoginResponse = LoginResponse
   { loginResponseToken :: Text -- ^ 
   , loginResponseSsoCode :: Maybe Text -- ^ 
   , loginResponseUuid :: UUID -- ^ 
+  , loginResponseIsAdmin :: Bool -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON LoginResponse where
