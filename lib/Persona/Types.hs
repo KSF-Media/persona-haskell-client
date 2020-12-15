@@ -7,6 +7,7 @@ module Persona.Types (
   ActiveDays (..),
   Address (..),
   Campaign (..),
+  CancelSubscriptionReason (..),
   CodeForTokenData (..),
   DeleteTempAddressChangeDates (..),
   DeliveryAddress (..),
@@ -139,6 +140,22 @@ instance ToSchema Campaign where
   declareNamedSchema = Swagger.genericDeclareNamedSchema
     $ Swagger.fromAesonOptions
     $ removeFieldLabelPrefix False "campaign"
+
+
+-- | 
+data CancelSubscriptionReason = CancelSubscriptionReason
+  { cancelSubscriptionReasonReason :: Text -- ^ 
+  , cancelSubscriptionReasonNotes :: Maybe Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON CancelSubscriptionReason where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "cancelSubscriptionReason")
+instance ToJSON CancelSubscriptionReason where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "cancelSubscriptionReason")
+instance ToSchema CancelSubscriptionReason where
+  declareNamedSchema = Swagger.genericDeclareNamedSchema
+    $ Swagger.fromAesonOptions
+    $ removeFieldLabelPrefix False "cancelSubscriptionReason"
 
 
 -- | 
