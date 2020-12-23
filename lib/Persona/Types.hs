@@ -803,6 +803,7 @@ data Payment = Payment
   , paymentState :: Text -- ^ 
   , paymentDiscPercent :: Maybe Double -- ^ 
   , paymentDiscAmount :: Maybe Double -- ^ 
+  , paymentReference :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Payment where
