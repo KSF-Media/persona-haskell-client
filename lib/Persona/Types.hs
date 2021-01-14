@@ -692,6 +692,7 @@ data Subscription = Subscription
   , subscriptionExtsubsexists :: Bool -- ^ 
   , subscriptionCampaign :: Maybe Campaign -- ^ 
   , subscriptionPaused :: Maybe [PausedSubscription] -- ^ 
+  , subscriptionReceiver :: Maybe Text -- ^ 
   , subscriptionDeliveryAddress :: Maybe DeliveryAddress -- ^ 
   , subscriptionPendingAddressChanges :: Maybe [PendingAddressChange] -- ^ 
   , subscriptionOrderNumber :: Maybe Text -- ^ 
