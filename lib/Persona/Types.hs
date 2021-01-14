@@ -94,10 +94,6 @@ instance FromJSON ActiveDays where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "activeDays")
 instance ToJSON ActiveDays where
   toJSON = genericToJSON (removeFieldLabelPrefix False "activeDays")
-instance ToSchema ActiveDays where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "activeDays"
 
 
 -- | 
@@ -116,10 +112,6 @@ instance FromJSON Address where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "address")
 instance ToJSON Address where
   toJSON = genericToJSON (removeFieldLabelPrefix False "address")
-instance ToSchema Address where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "address"
 
 
 -- | 
@@ -136,10 +128,6 @@ instance FromJSON Campaign where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "campaign")
 instance ToJSON Campaign where
   toJSON = genericToJSON (removeFieldLabelPrefix False "campaign")
-instance ToSchema Campaign where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "campaign"
 
 
 -- | 
@@ -152,10 +140,6 @@ instance FromJSON CancelSubscriptionReason where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "cancelSubscriptionReason")
 instance ToJSON CancelSubscriptionReason where
   toJSON = genericToJSON (removeFieldLabelPrefix False "cancelSubscriptionReason")
-instance ToSchema CancelSubscriptionReason where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "cancelSubscriptionReason"
 
 
 -- | 
@@ -167,10 +151,6 @@ instance FromJSON CodeForTokenData where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "codeForTokenData")
 instance ToJSON CodeForTokenData where
   toJSON = genericToJSON (removeFieldLabelPrefix False "codeForTokenData")
-instance ToSchema CodeForTokenData where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "codeForTokenData"
 
 
 -- | 
@@ -183,10 +163,6 @@ instance FromJSON DeleteTempAddressChangeDates where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "deleteTempAddressChangeDates")
 instance ToJSON DeleteTempAddressChangeDates where
   toJSON = genericToJSON (removeFieldLabelPrefix False "deleteTempAddressChangeDates")
-instance ToSchema DeleteTempAddressChangeDates where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "deleteTempAddressChangeDates"
 
 
 -- | 
@@ -201,10 +177,6 @@ instance FromJSON DeliveryAddress where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "deliveryAddress")
 instance ToJSON DeliveryAddress where
   toJSON = genericToJSON (removeFieldLabelPrefix False "deliveryAddress")
-instance ToSchema DeliveryAddress where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "deliveryAddress"
 
 
 -- | 
@@ -221,10 +193,6 @@ instance FromJSON DeliveryReclamation where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "deliveryReclamation")
 instance ToJSON DeliveryReclamation where
   toJSON = genericToJSON (removeFieldLabelPrefix False "deliveryReclamation")
-instance ToSchema DeliveryReclamation where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "deliveryReclamation"
 
 
 -- | 
@@ -236,10 +204,6 @@ instance FromJSON DeliveryReclamationClaim where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "deliveryReclamationClaim")
 instance ToJSON DeliveryReclamationClaim where
   toJSON = genericToJSON (removeFieldLabelPrefix False "deliveryReclamationClaim")
-instance ToSchema DeliveryReclamationClaim where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "deliveryReclamationClaim"
 
 
 -- | 
@@ -252,10 +216,6 @@ instance FromJSON DescriptionFrequency where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "descriptionFrequency")
 instance ToJSON DescriptionFrequency where
   toJSON = genericToJSON (removeFieldLabelPrefix False "descriptionFrequency")
-instance ToSchema DescriptionFrequency where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "descriptionFrequency"
 
 
 -- | 
@@ -268,10 +228,6 @@ instance FromJSON EntitlementAccess where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "entitlementAccess")
 instance ToJSON EntitlementAccess where
   toJSON = genericToJSON (removeFieldLabelPrefix False "entitlementAccess")
-instance ToSchema EntitlementAccess where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "entitlementAccess"
 
 
 -- | 
@@ -283,10 +239,6 @@ instance FromJSON ForgotPasswordData where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "forgotPasswordData")
 instance ToJSON ForgotPasswordData where
   toJSON = genericToJSON (removeFieldLabelPrefix False "forgotPasswordData")
-instance ToSchema ForgotPasswordData where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "forgotPasswordData"
 
 
 -- | 
@@ -300,10 +252,6 @@ instance FromJSON GdprConsent where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "gdprConsent")
 instance ToJSON GdprConsent where
   toJSON = genericToJSON (removeFieldLabelPrefix False "gdprConsent")
-instance ToSchema GdprConsent where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "gdprConsent"
 
 
 -- | 
@@ -317,10 +265,6 @@ instance FromJSON InlineResponse400 where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse400")
 instance ToJSON InlineResponse400 where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse400")
-instance ToSchema InlineResponse400 where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse400"
 
 
 -- | 
@@ -333,10 +277,6 @@ instance FromJSON InlineResponse400InvalidRequestBody where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse400InvalidRequestBody")
 instance ToJSON InlineResponse400InvalidRequestBody where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse400InvalidRequestBody")
-instance ToSchema InlineResponse400InvalidRequestBody where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse400InvalidRequestBody"
 
 
 -- | 
@@ -350,10 +290,6 @@ instance FromJSON InlineResponse403 where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse403")
 instance ToJSON InlineResponse403 where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse403")
-instance ToSchema InlineResponse403 where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse403"
 
 
 -- | 
@@ -367,10 +303,6 @@ instance FromJSON InlineResponse4031 where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4031")
 instance ToJSON InlineResponse4031 where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4031")
-instance ToSchema InlineResponse4031 where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse4031"
 
 
 -- | 
@@ -382,10 +314,6 @@ instance FromJSON InlineResponse4031AccessTokenExpired where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4031AccessTokenExpired")
 instance ToJSON InlineResponse4031AccessTokenExpired where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4031AccessTokenExpired")
-instance ToSchema InlineResponse4031AccessTokenExpired where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse4031AccessTokenExpired"
 
 
 -- | 
@@ -401,10 +329,6 @@ instance FromJSON InlineResponse4032 where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4032")
 instance ToJSON InlineResponse4032 where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4032")
-instance ToSchema InlineResponse4032 where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse4032"
 
 
 -- | 
@@ -418,10 +342,6 @@ instance FromJSON InlineResponse4032EmailAddressInUse where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4032EmailAddressInUse")
 instance ToJSON InlineResponse4032EmailAddressInUse where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4032EmailAddressInUse")
-instance ToSchema InlineResponse4032EmailAddressInUse where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse4032EmailAddressInUse"
 
 
 -- | 
@@ -433,10 +353,6 @@ instance FromJSON InlineResponse4032EmailNotAuthorized where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4032EmailNotAuthorized")
 instance ToJSON InlineResponse4032EmailNotAuthorized where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4032EmailNotAuthorized")
-instance ToSchema InlineResponse4032EmailNotAuthorized where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse4032EmailNotAuthorized"
 
 
 -- | 
@@ -448,10 +364,6 @@ instance FromJSON InlineResponse4032OauthFailed where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4032OauthFailed")
 instance ToJSON InlineResponse4032OauthFailed where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4032OauthFailed")
-instance ToSchema InlineResponse4032OauthFailed where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse4032OauthFailed"
 
 
 -- | 
@@ -463,10 +375,6 @@ instance FromJSON InlineResponse403InvalidCredentials where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse403InvalidCredentials")
 instance ToJSON InlineResponse403InvalidCredentials where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse403InvalidCredentials")
-instance ToSchema InlineResponse403InvalidCredentials where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse403InvalidCredentials"
 
 
 -- | 
@@ -480,10 +388,6 @@ instance FromJSON InlineResponse415 where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse415")
 instance ToJSON InlineResponse415 where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse415")
-instance ToSchema InlineResponse415 where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse415"
 
 
 -- | 
@@ -495,10 +399,6 @@ instance FromJSON InlineResponse415UnsupportedMediaType where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse415UnsupportedMediaType")
 instance ToJSON InlineResponse415UnsupportedMediaType where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse415UnsupportedMediaType")
-instance ToSchema InlineResponse415UnsupportedMediaType where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse415UnsupportedMediaType"
 
 
 -- | 
@@ -512,10 +412,6 @@ instance FromJSON InlineResponse500 where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse500")
 instance ToJSON InlineResponse500 where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse500")
-instance ToSchema InlineResponse500 where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse500"
 
 
 -- | 
@@ -527,10 +423,6 @@ instance FromJSON InlineResponse500InternalServerError where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse500InternalServerError")
 instance ToJSON InlineResponse500InternalServerError where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse500InternalServerError")
-instance ToSchema InlineResponse500InternalServerError where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "inlineResponse500InternalServerError"
 
 
 -- | 
@@ -544,10 +436,6 @@ instance FromJSON LegalConsent where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "legalConsent")
 instance ToJSON LegalConsent where
   toJSON = genericToJSON (removeFieldLabelPrefix False "legalConsent")
-instance ToSchema LegalConsent where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "legalConsent"
 
 
 -- | 
@@ -561,10 +449,6 @@ instance FromJSON LoginData where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "loginData")
 instance ToJSON LoginData where
   toJSON = genericToJSON (removeFieldLabelPrefix False "loginData")
-instance ToSchema LoginData where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "loginData"
 
 
 -- | 
@@ -577,10 +461,6 @@ instance FromJSON LoginDataSSO where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "loginDataSSO")
 instance ToJSON LoginDataSSO where
   toJSON = genericToJSON (removeFieldLabelPrefix False "loginDataSSO")
-instance ToSchema LoginDataSSO where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "loginDataSSO"
 
 
 -- | 
@@ -594,10 +474,6 @@ instance FromJSON LoginDataSoMe where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "loginDataSoMe")
 instance ToJSON LoginDataSoMe where
   toJSON = genericToJSON (removeFieldLabelPrefix False "loginDataSoMe")
-instance ToSchema LoginDataSoMe where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "loginDataSoMe"
 
 
 -- | 
@@ -612,10 +488,6 @@ instance FromJSON LoginResponse where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "loginResponse")
 instance ToJSON LoginResponse where
   toJSON = genericToJSON (removeFieldLabelPrefix False "loginResponse")
-instance ToSchema LoginResponse where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "loginResponse"
 
 
 -- | 
@@ -628,10 +500,6 @@ instance FromJSON NewDeliveryReclamation where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "newDeliveryReclamation")
 instance ToJSON NewDeliveryReclamation where
   toJSON = genericToJSON (removeFieldLabelPrefix False "newDeliveryReclamation")
-instance ToSchema NewDeliveryReclamation where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "newDeliveryReclamation"
 
 
 -- | 
@@ -644,10 +512,6 @@ instance FromJSON NewTemporaryUser where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "newTemporaryUser")
 instance ToJSON NewTemporaryUser where
   toJSON = genericToJSON (removeFieldLabelPrefix False "newTemporaryUser")
-instance ToSchema NewTemporaryUser where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "newTemporaryUser"
 
 
 -- | 
@@ -669,10 +533,6 @@ instance FromJSON NewUser where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "newUser")
 instance ToJSON NewUser where
   toJSON = genericToJSON (removeFieldLabelPrefix False "newUser")
-instance ToSchema NewUser where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "newUser"
 
 
 -- | 
@@ -692,10 +552,6 @@ instance FromJSON Package where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "package")
 instance ToJSON Package where
   toJSON = genericToJSON (removeFieldLabelPrefix False "package")
-instance ToSchema Package where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "package"
 
 
 -- | 
@@ -715,10 +571,6 @@ instance FromJSON PackageDescription where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "packageDescription")
 instance ToJSON PackageDescription where
   toJSON = genericToJSON (removeFieldLabelPrefix False "packageDescription")
-instance ToSchema PackageDescription where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "packageDescription"
 
 
 -- | 
@@ -732,10 +584,6 @@ instance FromJSON PackageOffer where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "packageOffer")
 instance ToJSON PackageOffer where
   toJSON = genericToJSON (removeFieldLabelPrefix False "packageOffer")
-instance ToSchema PackageOffer where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "packageOffer"
 
 
 -- | 
@@ -748,10 +596,6 @@ instance FromJSON Paper where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "paper")
 instance ToJSON Paper where
   toJSON = genericToJSON (removeFieldLabelPrefix False "paper")
-instance ToSchema Paper where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "paper"
 
 
 -- | 
@@ -767,10 +611,6 @@ instance FromJSON PastTemporaryAddress where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "pastTemporaryAddress")
 instance ToJSON PastTemporaryAddress where
   toJSON = genericToJSON (removeFieldLabelPrefix False "pastTemporaryAddress")
-instance ToSchema PastTemporaryAddress where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "pastTemporaryAddress"
 
 
 -- | 
@@ -783,10 +623,6 @@ instance FromJSON PausedSubscription where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "pausedSubscription")
 instance ToJSON PausedSubscription where
   toJSON = genericToJSON (removeFieldLabelPrefix False "pausedSubscription")
-instance ToSchema PausedSubscription where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "pausedSubscription"
 
 
 -- | 
@@ -810,10 +646,6 @@ instance FromJSON Payment where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "payment")
 instance ToJSON Payment where
   toJSON = genericToJSON (removeFieldLabelPrefix False "payment")
-instance ToSchema Payment where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "payment"
 
 
 -- | 
@@ -828,10 +660,6 @@ instance FromJSON PendingAddressChange where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "pendingAddressChange")
 instance ToJSON PendingAddressChange where
   toJSON = genericToJSON (removeFieldLabelPrefix False "pendingAddressChange")
-instance ToSchema PendingAddressChange where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "pendingAddressChange"
 
 
 -- | 
@@ -848,10 +676,6 @@ instance FromJSON Product where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "product")
 instance ToJSON Product where
   toJSON = genericToJSON (removeFieldLabelPrefix False "product")
-instance ToSchema Product where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "product"
 
 
 -- | 
@@ -879,10 +703,6 @@ instance FromJSON Subscription where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "subscription")
 instance ToJSON Subscription where
   toJSON = genericToJSON (removeFieldLabelPrefix False "subscription")
-instance ToSchema Subscription where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "subscription"
 
 
 -- | 
@@ -901,10 +721,6 @@ instance FromJSON SubscriptionDates where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "subscriptionDates")
 instance ToJSON SubscriptionDates where
   toJSON = genericToJSON (removeFieldLabelPrefix False "subscriptionDates")
-instance ToSchema SubscriptionDates where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "subscriptionDates"
 
 
 -- | 
@@ -917,10 +733,6 @@ instance FromJSON SubscriptionPauseDates where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "subscriptionPauseDates")
 instance ToJSON SubscriptionPauseDates where
   toJSON = genericToJSON (removeFieldLabelPrefix False "subscriptionPauseDates")
-instance ToSchema SubscriptionPauseDates where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "subscriptionPauseDates"
 
 
 -- | 
@@ -936,10 +748,6 @@ instance FromJSON SubscriptionPayments where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "subscriptionPayments")
 instance ToJSON SubscriptionPayments where
   toJSON = genericToJSON (removeFieldLabelPrefix False "subscriptionPayments")
-instance ToSchema SubscriptionPayments where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "subscriptionPayments"
 
 
 -- | 
@@ -956,10 +764,6 @@ instance FromJSON TemporaryAddressChange where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "temporaryAddressChange")
 instance ToJSON TemporaryAddressChange where
   toJSON = genericToJSON (removeFieldLabelPrefix False "temporaryAddressChange")
-instance ToSchema TemporaryAddressChange where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "temporaryAddressChange"
 
 
 -- | 
@@ -972,10 +776,6 @@ instance FromJSON TokenResponse where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "tokenResponse")
 instance ToJSON TokenResponse where
   toJSON = genericToJSON (removeFieldLabelPrefix False "tokenResponse")
-instance ToSchema TokenResponse where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "tokenResponse"
 
 
 -- | 
@@ -989,10 +789,6 @@ instance FromJSON UpdatePasswordData where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "updatePasswordData")
 instance ToJSON UpdatePasswordData where
   toJSON = genericToJSON (removeFieldLabelPrefix False "updatePasswordData")
-instance ToSchema UpdatePasswordData where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "updatePasswordData"
 
 
 -- | 
@@ -1015,10 +811,6 @@ instance FromJSON User where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "user")
 instance ToJSON User where
   toJSON = genericToJSON (removeFieldLabelPrefix False "user")
-instance ToSchema User where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "user"
 
 
 -- | 
@@ -1026,16 +818,13 @@ data UserUpdate = UserUpdate
   { userUpdateFirstName :: Maybe Text -- ^ 
   , userUpdateLastName :: Maybe Text -- ^ 
   , userUpdateAddress :: Maybe UserUpdateAddress -- ^ 
+  , userUpdatePendingAddressChanges :: Maybe [Value] -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON UserUpdate where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "userUpdate")
 instance ToJSON UserUpdate where
   toJSON = genericToJSON (removeFieldLabelPrefix False "userUpdate")
-instance ToSchema UserUpdate where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "userUpdate"
 
 
 -- | 
@@ -1050,10 +839,6 @@ instance FromJSON UserUpdateAddress where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "userUpdateAddress")
 instance ToJSON UserUpdateAddress where
   toJSON = genericToJSON (removeFieldLabelPrefix False "userUpdateAddress")
-instance ToSchema UserUpdateAddress where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "userUpdateAddress"
 
 
 -- | 
@@ -1066,10 +851,6 @@ instance FromJSON UserUpdatePassword where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "userUpdatePassword")
 instance ToJSON UserUpdatePassword where
   toJSON = genericToJSON (removeFieldLabelPrefix False "userUpdatePassword")
-instance ToSchema UserUpdatePassword where
-  declareNamedSchema = Swagger.genericDeclareNamedSchema
-    $ Swagger.fromAesonOptions
-    $ removeFieldLabelPrefix False "userUpdatePassword"
 
 
 uncapitalize :: String -> String
