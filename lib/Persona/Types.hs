@@ -1043,6 +1043,7 @@ data UserUpdateAddress = UserUpdateAddress
   { userUpdateAddressCountryCode :: Text -- ^ 
   , userUpdateAddressZipCode :: Text -- ^ 
   , userUpdateAddressStreetAddress :: Text -- ^ 
+  , userUpdateAddressValidFrom :: Maybe Day -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON UserUpdateAddress where
