@@ -156,7 +156,7 @@ instance ToJSON CodeForTokenData where
 -- | 
 data DeleteTempAddressChangeDates = DeleteTempAddressChangeDates
   { deleteTempAddressChangeDatesStartDate :: Day -- ^ 
-  , deleteTempAddressChangeDatesEndDate :: Day -- ^ 
+  , deleteTempAddressChangeDatesEndDate :: Maybe Day -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON DeleteTempAddressChangeDates where
