@@ -652,7 +652,7 @@ instance ToJSON Payment where
 data PendingAddressChange = PendingAddressChange
   { pendingAddressChangeAddress :: DeliveryAddress -- ^ 
   , pendingAddressChangeStartDate :: Day -- ^ 
-  , pendingAddressChangeEndDate :: Day -- ^ 
+  , pendingAddressChangeEndDate :: Maybe Day -- ^ 
   , pendingAddressChangeType :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
