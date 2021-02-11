@@ -142,6 +142,7 @@ type PersonaAPI
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] DeleteTempAddressChangeDates :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangeDelete' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] TemporaryAddressChange :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangePost' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "cancel" :> ReqBody '[JSON] CancelSubscriptionReason :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoCancelPut' route
+    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "pause" :> ReqBody '[JSON] SubscriptionPauseEdit :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoPausePatch' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "pause" :> ReqBody '[JSON] SubscriptionPauseDates :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoPausePost' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "reclamation" :> ReqBody '[JSON] NewDeliveryReclamation :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] DeliveryReclamation -- 'usersUuidSubscriptionsSubsnoReclamationPost' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "reclamations" :> Capture "reclaimno" Int :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] DeliveryReclamation -- 'usersUuidSubscriptionsSubsnoReclamationsReclaimnoGet' route
@@ -189,6 +190,7 @@ data PersonaBackend m = PersonaBackend
   , usersUuidSubscriptionsSubsnoAddressChangeDelete :: UUID -> Int -> DeleteTempAddressChangeDates -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidSubscriptionsSubsnoAddressChangePost :: UUID -> Int -> TemporaryAddressChange -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidSubscriptionsSubsnoCancelPut :: UUID -> Int -> CancelSubscriptionReason -> Maybe UUID -> Maybe Text -> m Subscription{- ^ The subscription continues to be valid until the end of the billing period. Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidSubscriptionsSubsnoPausePatch :: UUID -> Int -> SubscriptionPauseEdit -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidSubscriptionsSubsnoPausePost :: UUID -> Int -> SubscriptionPauseDates -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidSubscriptionsSubsnoReclamationPost :: UUID -> Int -> NewDeliveryReclamation -> Maybe UUID -> Maybe Text -> m DeliveryReclamation{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidSubscriptionsSubsnoReclamationsReclaimnoGet :: UUID -> Int -> Int -> Maybe UUID -> Maybe Text -> m DeliveryReclamation{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
@@ -240,6 +242,7 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> usersUuidSubscriptionsSubsnoAddressChangeDelete) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoAddressChangePost) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoCancelPut) :<|>
+     (coerce -> usersUuidSubscriptionsSubsnoPausePatch) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoPausePost) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoReclamationPost) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoReclamationsReclaimnoGet) :<|>
@@ -304,6 +307,7 @@ runPersonaServer Config{..} backend = do
        coerce usersUuidSubscriptionsSubsnoAddressChangeDelete :<|>
        coerce usersUuidSubscriptionsSubsnoAddressChangePost :<|>
        coerce usersUuidSubscriptionsSubsnoCancelPut :<|>
+       coerce usersUuidSubscriptionsSubsnoPausePatch :<|>
        coerce usersUuidSubscriptionsSubsnoPausePost :<|>
        coerce usersUuidSubscriptionsSubsnoReclamationPost :<|>
        coerce usersUuidSubscriptionsSubsnoReclamationsReclaimnoGet :<|>

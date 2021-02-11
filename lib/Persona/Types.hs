@@ -51,6 +51,7 @@ module Persona.Types (
   Subscription (..),
   SubscriptionDates (..),
   SubscriptionPauseDates (..),
+  SubscriptionPauseEdit (..),
   SubscriptionPayments (..),
   TemporaryAddressChange (..),
   TokenResponse (..),
@@ -734,6 +735,20 @@ instance FromJSON SubscriptionPauseDates where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "subscriptionPauseDates")
 instance ToJSON SubscriptionPauseDates where
   toJSON = genericToJSON (removeFieldLabelPrefix False "subscriptionPauseDates")
+
+
+-- | 
+data SubscriptionPauseEdit = SubscriptionPauseEdit
+  { subscriptionPauseEditOldStartDate :: Day -- ^ 
+  , subscriptionPauseEditOldEndDate :: Day -- ^ 
+  , subscriptionPauseEditNewStartDate :: Day -- ^ 
+  , subscriptionPauseEditNewEndDate :: Day -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON SubscriptionPauseEdit where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "subscriptionPauseEdit")
+instance ToJSON SubscriptionPauseEdit where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "subscriptionPauseEdit")
 
 
 -- | 
