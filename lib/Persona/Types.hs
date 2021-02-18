@@ -6,7 +6,6 @@
 module Persona.Types (
   ActiveDays (..),
   Address (..),
-  Campaign (..),
   CancelSubscriptionReason (..),
   CodeForTokenData (..),
   DeleteTempAddressChangeDates (..),
@@ -40,6 +39,7 @@ module Persona.Types (
   NewTemporaryUser (..),
   NewUser (..),
   Package (..),
+  PackageCampaign (..),
   PackageDescription (..),
   PackageOffer (..),
   Paper (..),
@@ -54,6 +54,7 @@ module Persona.Types (
   SubscriptionPauseEdit (..),
   SubscriptionPayments (..),
   TemporaryAddressChange (..),
+  TemporaryAddressChangeDates (..),
   TokenResponse (..),
   UpdatePasswordData (..),
   User (..),
@@ -113,22 +114,6 @@ instance FromJSON Address where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "address")
 instance ToJSON Address where
   toJSON = genericToJSON (removeFieldLabelPrefix False "address")
-
-
--- | 
-data Campaign = Campaign
-  { campaignNo :: Int -- ^ 
-  , campaignId :: Text -- ^ 
-  , campaignName :: Text -- ^ 
-  , campaignPriceEur :: Double -- ^ 
-  , campaignLength :: Int -- ^ 
-  , campaignLengthUnit :: Text -- ^ 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON Campaign where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "campaign")
-instance ToJSON Campaign where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "campaign")
 
 
 -- | 
@@ -544,7 +529,7 @@ data Package = Package
   , packageDigitalOnly :: Bool -- ^ 
   , packageProducts :: [Product] -- ^ 
   , packageOffers :: [PackageOffer] -- ^ 
-  , packageCampaigns :: [Campaign] -- ^ 
+  , packageCampaigns :: [PackageCampaign] -- ^ 
   , packageNextDelivery :: Maybe Day -- ^ 
   , packageDescription :: Maybe PackageDescription -- ^ 
   } deriving (Show, Eq, Generic, Data)
@@ -553,6 +538,22 @@ instance FromJSON Package where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "package")
 instance ToJSON Package where
   toJSON = genericToJSON (removeFieldLabelPrefix False "package")
+
+
+-- | 
+data PackageCampaign = PackageCampaign
+  { packageCampaignNo :: Int -- ^ 
+  , packageCampaignId :: Text -- ^ 
+  , packageCampaignName :: Text -- ^ 
+  , packageCampaignPriceEur :: Double -- ^ 
+  , packageCampaignLength :: Int -- ^ 
+  , packageCampaignLengthUnit :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON PackageCampaign where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "packageCampaign")
+instance ToJSON PackageCampaign where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "packageCampaign")
 
 
 -- | 
@@ -691,7 +692,7 @@ data Subscription = Subscription
   , subscriptionPackage :: Package -- ^ 
   , subscriptionDates :: SubscriptionDates -- ^ 
   , subscriptionExtsubsexists :: Bool -- ^ 
-  , subscriptionCampaign :: Maybe Campaign -- ^ 
+  , subscriptionCampaign :: Maybe PackageCampaign -- ^ 
   , subscriptionPaused :: Maybe [PausedSubscription] -- ^ 
   , subscriptionReceiver :: Maybe Text -- ^ 
   , subscriptionDeliveryAddress :: Maybe DeliveryAddress -- ^ 
@@ -780,6 +781,19 @@ instance FromJSON TemporaryAddressChange where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "temporaryAddressChange")
 instance ToJSON TemporaryAddressChange where
   toJSON = genericToJSON (removeFieldLabelPrefix False "temporaryAddressChange")
+
+
+-- | 
+data TemporaryAddressChangeDates = TemporaryAddressChangeDates
+  { temporaryAddressChangeDatesOldStartDate :: Day -- ^ 
+  , temporaryAddressChangeDatesNewStartDate :: Day -- ^ 
+  , temporaryAddressChangeDatesNewEndDate :: Maybe Day -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON TemporaryAddressChangeDates where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "temporaryAddressChangeDates")
+instance ToJSON TemporaryAddressChangeDates where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "temporaryAddressChangeDates")
 
 
 -- | 

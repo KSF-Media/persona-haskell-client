@@ -140,6 +140,7 @@ type PersonaAPI
     :<|> "users" :> Capture "uuid" UUID :> ReqBody '[JSON] UserUpdate :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] User -- 'usersUuidPatch' route
     :<|> "users" :> Capture "uuid" UUID :> "payments" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [SubscriptionPayments] -- 'usersUuidPaymentsGet' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] DeleteTempAddressChangeDates :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangeDelete' route
+    :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] TemporaryAddressChangeDates :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangePatch' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] TemporaryAddressChange :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangePost' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "cancel" :> ReqBody '[JSON] CancelSubscriptionReason :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoCancelPut' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "pause" :> ReqBody '[JSON] SubscriptionPauseEdit :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoPausePatch' route
@@ -188,6 +189,7 @@ data PersonaBackend m = PersonaBackend
   , usersUuidPatch :: UUID -> UserUpdate -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidPaymentsGet :: UUID -> Maybe UUID -> Maybe Text -> m [SubscriptionPayments]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidSubscriptionsSubsnoAddressChangeDelete :: UUID -> Int -> DeleteTempAddressChangeDates -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidSubscriptionsSubsnoAddressChangePatch :: UUID -> Int -> TemporaryAddressChangeDates -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidSubscriptionsSubsnoAddressChangePost :: UUID -> Int -> TemporaryAddressChange -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidSubscriptionsSubsnoCancelPut :: UUID -> Int -> CancelSubscriptionReason -> Maybe UUID -> Maybe Text -> m Subscription{- ^ The subscription continues to be valid until the end of the billing period. Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidSubscriptionsSubsnoPausePatch :: UUID -> Int -> SubscriptionPauseEdit -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
@@ -240,6 +242,7 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> usersUuidPatch) :<|>
      (coerce -> usersUuidPaymentsGet) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoAddressChangeDelete) :<|>
+     (coerce -> usersUuidSubscriptionsSubsnoAddressChangePatch) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoAddressChangePost) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoCancelPut) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoPausePatch) :<|>
@@ -305,6 +308,7 @@ runPersonaServer Config{..} backend = do
        coerce usersUuidPatch :<|>
        coerce usersUuidPaymentsGet :<|>
        coerce usersUuidSubscriptionsSubsnoAddressChangeDelete :<|>
+       coerce usersUuidSubscriptionsSubsnoAddressChangePatch :<|>
        coerce usersUuidSubscriptionsSubsnoAddressChangePost :<|>
        coerce usersUuidSubscriptionsSubsnoCancelPut :<|>
        coerce usersUuidSubscriptionsSubsnoPausePatch :<|>
