@@ -531,6 +531,8 @@ data Package = Package
   , packageOffers :: [PackageOffer] -- ^ 
   , packageCampaigns :: [PackageCampaign] -- ^ 
   , packageNextDelivery :: Maybe Day -- ^ 
+  , packageCanPause :: Bool -- ^ 
+  , packageCanTempAddr :: Bool -- ^ 
   , packageDescription :: Maybe PackageDescription -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
