@@ -850,6 +850,7 @@ data UserUpdate = UserUpdate
   { userUpdateFirstName :: Maybe Text -- ^ 
   , userUpdateLastName :: Maybe Text -- ^ 
   , userUpdateAddress :: Maybe UserUpdateAddress -- ^ 
+  , userUpdateEmail :: Maybe Text -- ^ 
   , userUpdatePendingAddressChanges :: Maybe [Value] -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
