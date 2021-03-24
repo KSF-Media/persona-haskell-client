@@ -7,11 +7,11 @@ module Persona.Types (
   ActiveDays (..),
   Address (..),
   CancelSubscriptionReason (..),
+  ClaimType (..),
   CodeForTokenData (..),
   DeleteTempAddressChangeDates (..),
   DeliveryAddress (..),
   DeliveryReclamation (..),
-  DeliveryReclamationClaim (..),
   DescriptionFrequency (..),
   EntitlementAccess (..),
   ForgotPasswordData (..),
@@ -83,13 +83,13 @@ import Data.Function ((&))
 
 -- | 
 data ActiveDays = ActiveDays
-  { activeDaysMon :: Bool -- ^ 
-  , activeDaysTue :: Bool -- ^ 
-  , activeDaysWed :: Bool -- ^ 
-  , activeDaysThu :: Bool -- ^ 
-  , activeDaysFri :: Bool -- ^ 
-  , activeDaysSat :: Bool -- ^ 
-  , activeDaysSun :: Bool -- ^ 
+  { activeDaysMon :: Bool -- ^ Active on Monday
+  , activeDaysTue :: Bool -- ^ Active on Tuesday
+  , activeDaysWed :: Bool -- ^ Active on Wednedsday
+  , activeDaysThu :: Bool -- ^ Active on Thursday
+  , activeDaysFri :: Bool -- ^ Active on Friday
+  , activeDaysSat :: Bool -- ^ Active on Saturday
+  , activeDaysSun :: Bool -- ^ Active on Sunday
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON ActiveDays where
@@ -98,16 +98,16 @@ instance ToJSON ActiveDays where
   toJSON = genericToJSON (removeFieldLabelPrefix False "activeDays")
 
 
--- | 
+-- | Postal address for shipping the papers.
 data Address = Address
-  { addressCountryCode :: Text -- ^ 
-  , addressZipCode :: Maybe Text -- ^ 
-  , addressCity :: Maybe Text -- ^ 
-  , addressStreetAddress :: Text -- ^ 
-  , addressStreetName :: Maybe Text -- ^ 
-  , addressHouseNo :: Maybe Text -- ^ 
-  , addressStaircase :: Maybe Text -- ^ 
-  , addressApartment :: Maybe Text -- ^ 
+  { addressCountryCode :: Text -- ^ Country code
+  , addressZipCode :: Maybe Text -- ^ Zip code
+  , addressCity :: Maybe Text -- ^ City
+  , addressStreetAddress :: Text -- ^ Street address, containing all details
+  , addressStreetName :: Maybe Text -- ^ Street name
+  , addressHouseNo :: Maybe Text -- ^ House number
+  , addressStaircase :: Maybe Text -- ^ Staircase letter
+  , addressApartment :: Maybe Text -- ^ Apartment number
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Address where
@@ -116,16 +116,27 @@ instance ToJSON Address where
   toJSON = genericToJSON (removeFieldLabelPrefix False "address")
 
 
--- | 
+-- | Cancel reason
 data CancelSubscriptionReason = CancelSubscriptionReason
-  { cancelSubscriptionReasonReason :: Text -- ^ 
-  , cancelSubscriptionReasonNotes :: Maybe Text -- ^ 
+  { cancelSubscriptionReasonReason :: Text -- ^ Cancel reason code
+  , cancelSubscriptionReasonNotes :: Maybe Text -- ^ Cancel reason explanation
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON CancelSubscriptionReason where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "cancelSubscriptionReason")
 instance ToJSON CancelSubscriptionReason where
   toJSON = genericToJSON (removeFieldLabelPrefix False "cancelSubscriptionReason")
+
+
+-- | 
+data ClaimType = ClaimType
+  { 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON ClaimType where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "claimType")
+instance ToJSON ClaimType where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "claimType")
 
 
 -- | 
@@ -153,10 +164,10 @@ instance ToJSON DeleteTempAddressChangeDates where
 
 -- | 
 data DeliveryAddress = DeliveryAddress
-  { deliveryAddressStreetAddress :: Maybe Text -- ^ 
+  { deliveryAddressStreetAddress :: Maybe Text -- ^ Street address, containing all details
   , deliveryAddressZipcode :: Text -- ^ 
   , deliveryAddressCity :: Maybe Text -- ^ 
-  , deliveryAddressTemporaryName :: Maybe Text -- ^ 
+  , deliveryAddressTemporaryName :: Maybe Text -- ^ Temporary name (or c/o) of delivery address
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON DeliveryAddress where
@@ -165,14 +176,14 @@ instance ToJSON DeliveryAddress where
   toJSON = genericToJSON (removeFieldLabelPrefix False "deliveryAddress")
 
 
--- | 
+-- | Data for a delivery reclamation.
 data DeliveryReclamation = DeliveryReclamation
-  { deliveryReclamationNumber :: Int -- ^ 
-  , deliveryReclamationCustomerNumber :: Int -- ^ 
-  , deliveryReclamationSubscriptionNumber :: Int -- ^ 
+  { deliveryReclamationNumber :: Int -- ^ The reclamation identifier
+  , deliveryReclamationCustomerNumber :: Int -- ^ The identifier of the customer that made reclamation
+  , deliveryReclamationSubscriptionNumber :: Int -- ^ The identifier of the subscription for which reclamation was made
   , deliveryReclamationDate :: Day -- ^ 
   , deliveryReclamationPublicationDate :: Day -- ^ 
-  , deliveryReclamationClaim :: Text -- ^ 
+  , deliveryReclamationClaim :: Text -- ^ The type of claim for the reclamation
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON DeliveryReclamation where
@@ -182,20 +193,9 @@ instance ToJSON DeliveryReclamation where
 
 
 -- | 
-data DeliveryReclamationClaim = DeliveryReclamationClaim
-  { 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON DeliveryReclamationClaim where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "deliveryReclamationClaim")
-instance ToJSON DeliveryReclamationClaim where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "deliveryReclamationClaim")
-
-
--- | 
 data DescriptionFrequency = DescriptionFrequency
-  { descriptionFrequencyAmount :: Int -- ^ 
-  , descriptionFrequencyUnit :: Text -- ^ 
+  { descriptionFrequencyAmount :: Int -- ^ Frequency number for the package
+  , descriptionFrequencyUnit :: Text -- ^ Unit in which the number is measured
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON DescriptionFrequency where
@@ -479,7 +479,7 @@ instance ToJSON LoginResponse where
 -- | 
 data NewDeliveryReclamation = NewDeliveryReclamation
   { newDeliveryReclamationPublicationDate :: Day -- ^ 
-  , newDeliveryReclamationClaim :: DeliveryReclamationClaim -- ^ 
+  , newDeliveryReclamationClaim :: ClaimType -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON NewDeliveryReclamation where
@@ -523,16 +523,16 @@ instance ToJSON NewUser where
 
 -- | 
 data Package = Package
-  { packageId :: Text -- ^ 
-  , packageName :: Text -- ^ 
+  { packageId :: Text -- ^ Package identifier
+  , packageName :: Text -- ^ Package name
   , packagePaper :: Paper -- ^ 
-  , packageDigitalOnly :: Bool -- ^ 
-  , packageProducts :: [Product] -- ^ 
-  , packageOffers :: [PackageOffer] -- ^ 
-  , packageCampaigns :: [PackageCampaign] -- ^ 
+  , packageDigitalOnly :: Bool -- ^ All products in this package are digital
+  , packageProducts :: [Product] -- ^ The Products contained in a package
+  , packageOffers :: [PackageOffer] -- ^ Offers for the package
+  , packageCampaigns :: [PackageCampaign] -- ^ Active campaigns for the package
   , packageNextDelivery :: Maybe Day -- ^ 
-  , packageCanPause :: Bool -- ^ 
-  , packageCanTempAddr :: Bool -- ^ 
+  , packageCanPause :: Bool -- ^ Does the package allow delivery pauses
+  , packageCanTempAddr :: Bool -- ^ Does the package allow temporary address changes
   , packageDescription :: Maybe PackageDescription -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
@@ -544,12 +544,12 @@ instance ToJSON Package where
 
 -- | 
 data PackageCampaign = PackageCampaign
-  { packageCampaignNo :: Int -- ^ 
-  , packageCampaignId :: Text -- ^ 
-  , packageCampaignName :: Text -- ^ 
-  , packageCampaignPriceEur :: Double -- ^ 
-  , packageCampaignLength :: Int -- ^ 
-  , packageCampaignLengthUnit :: Text -- ^ 
+  { packageCampaignNo :: Int -- ^ Campaign number
+  , packageCampaignId :: Text -- ^ Campaign id
+  , packageCampaignName :: Text -- ^ Campaign name
+  , packageCampaignPriceEur :: Double -- ^ Price of campaign in euros
+  , packageCampaignLength :: Int -- ^ Length of campaign
+  , packageCampaignLengthUnit :: Text -- ^ Unit of length (days, weeks, months, years)
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PackageCampaign where
@@ -560,15 +560,15 @@ instance ToJSON PackageCampaign where
 
 -- | 
 data PackageDescription = PackageDescription
-  { packageDescriptionBrand :: Text -- ^ 
-  , packageDescriptionBrandLong :: Text -- ^ 
-  , packageDescriptionDescShort :: Text -- ^ 
-  , packageDescriptionDescLong :: Text -- ^ 
-  , packageDescriptionUrl :: Text -- ^ 
-  , packageDescriptionDays :: Text -- ^ 
-  , packageDescriptionWeekdays :: Text -- ^ 
+  { packageDescriptionBrand :: Text -- ^ Brand name
+  , packageDescriptionBrandLong :: Text -- ^ Brand name, long
+  , packageDescriptionDescShort :: Text -- ^ Short description
+  , packageDescriptionDescLong :: Text -- ^ Long description
+  , packageDescriptionUrl :: Text -- ^ Url for the current package
+  , packageDescriptionDays :: Text -- ^ How many days the package is active
+  , packageDescriptionWeekdays :: Text -- ^ Weekdays for which the package is active
   , packageDescriptionFrequency :: DescriptionFrequency -- ^ 
-  , packageDescriptionIncludes :: [Text] -- ^ 
+  , packageDescriptionIncludes :: [Text] -- ^ Entitlements included in the package
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PackageDescription where
@@ -579,9 +579,9 @@ instance ToJSON PackageDescription where
 
 -- | 
 data PackageOffer = PackageOffer
-  { packageOfferMonths :: Int -- ^ 
-  , packageOfferTotalPrice :: Int -- ^ 
-  , packageOfferMonthlyPrice :: Int -- ^ 
+  { packageOfferMonths :: Int -- ^ Duration of the offer
+  , packageOfferTotalPrice :: Price -- ^ 
+  , packageOfferMonthlyPrice :: Price -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PackageOffer where
@@ -592,8 +592,8 @@ instance ToJSON PackageOffer where
 
 -- | 
 data Paper = Paper
-  { paperCode :: Text -- ^ 
-  , paperName :: Text -- ^ 
+  { paperCode :: Text -- ^ Identifying code of the paper
+  , paperName :: Text -- ^ The name of the paper
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Paper where
@@ -602,13 +602,13 @@ instance ToJSON Paper where
   toJSON = genericToJSON (removeFieldLabelPrefix False "paper")
 
 
--- | 
+-- | Data for previously used temporary addresses
 data PastTemporaryAddress = PastTemporaryAddress
-  { pastTemporaryAddressCountryCode :: Text -- ^ 
-  , pastTemporaryAddressZipcode :: Text -- ^ 
-  , pastTemporaryAddressCityName :: Maybe Text -- ^ 
-  , pastTemporaryAddressStreet :: Text -- ^ 
-  , pastTemporaryAddressTemporaryName :: Maybe Text -- ^ 
+  { pastTemporaryAddressCountryCode :: Text -- ^ Country code
+  , pastTemporaryAddressZipcode :: Text -- ^ Zip code
+  , pastTemporaryAddressCityName :: Maybe Text -- ^ City
+  , pastTemporaryAddressStreet :: Text -- ^ Street
+  , pastTemporaryAddressTemporaryName :: Maybe Text -- ^ Temporary name (c/o)
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PastTemporaryAddress where
@@ -631,7 +631,7 @@ instance ToJSON PausedSubscription where
 
 -- | 
 data Payment = Payment
-  { paymentInvno :: Int -- ^ 
+  { paymentInvno :: Int -- ^ Payment invoice ID
   , paymentDate :: Day -- ^ 
   , paymentDueDate :: Day -- ^ 
   , paymentExpenses :: Double -- ^ 
@@ -643,7 +643,7 @@ data Payment = Payment
   , paymentState :: Text -- ^ 
   , paymentDiscPercent :: Maybe Double -- ^ 
   , paymentDiscAmount :: Maybe Double -- ^ 
-  , paymentReference :: Maybe Text -- ^ 
+  , paymentReference :: Maybe Text -- ^ Reference number
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Payment where
@@ -657,7 +657,7 @@ data PendingAddressChange = PendingAddressChange
   { pendingAddressChangeAddress :: DeliveryAddress -- ^ 
   , pendingAddressChangeStartDate :: Day -- ^ 
   , pendingAddressChangeEndDate :: Maybe Day -- ^ 
-  , pendingAddressChangeType :: Text -- ^ 
+  , pendingAddressChangeType :: Text -- ^ Type of address change
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PendingAddressChange where
@@ -668,12 +668,12 @@ instance ToJSON PendingAddressChange where
 
 -- | 
 data Product = Product
-  { productId :: Text -- ^ 
-  , productName :: Text -- ^ 
+  { productId :: Text -- ^ Identifying code of the product
+  , productName :: Text -- ^ The name of the product
   , productActive :: ActiveDays -- ^ 
   , productNextDelivery :: Maybe Day -- ^ 
   , productPaper :: Paper -- ^ 
-  , productDigital :: Bool -- ^ 
+  , productDigital :: Bool -- ^ Is the product digital?
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Product where
@@ -684,24 +684,24 @@ instance ToJSON Product where
 
 -- | 
 data Subscription = Subscription
-  { subscriptionSubsno :: Int -- ^ 
-  , subscriptionExtno :: Int -- ^ 
-  , subscriptionCusno :: Int -- ^ 
-  , subscriptionPaycusno :: Int -- ^ 
-  , subscriptionKind :: Text -- ^ 
-  , subscriptionState :: Text -- ^ 
-  , subscriptionPricegroup :: Maybe Text -- ^ 
+  { subscriptionSubsno :: Int -- ^ Subscription Id - primary key together with extno
+  , subscriptionExtno :: Int -- ^ Subscription Extension Id - how many times a subscription has been extended
+  , subscriptionCusno :: Int -- ^ Customer getting the subscription
+  , subscriptionPaycusno :: Int -- ^ Customer paying for the subscription
+  , subscriptionKind :: Text -- ^ Subscription kind - what kind of order is it
+  , subscriptionState :: Text -- ^ Current state of the Subscription
+  , subscriptionPricegroup :: Maybe Text -- ^ Pricegroup of the Subscription
   , subscriptionPackage :: Package -- ^ 
   , subscriptionDates :: SubscriptionDates -- ^ 
-  , subscriptionExtsubsexists :: Bool -- ^ 
+  , subscriptionExtsubsexists :: Bool -- ^ If the extension of this subscription exists
   , subscriptionCampaign :: Maybe PackageCampaign -- ^ 
-  , subscriptionPaused :: Maybe [PausedSubscription] -- ^ 
-  , subscriptionReceiver :: Maybe Text -- ^ 
+  , subscriptionPaused :: Maybe [PausedSubscription] -- ^ Pause periods of this subscription
+  , subscriptionReceiver :: Maybe Text -- ^ The name of subscription receiver
   , subscriptionDeliveryAddress :: Maybe DeliveryAddress -- ^ 
-  , subscriptionPendingAddressChanges :: Maybe [PendingAddressChange] -- ^ 
-  , subscriptionOrderNumber :: Maybe Text -- ^ 
-  , subscriptionPaymentMethod :: Maybe Text -- ^ 
-  , subscriptionPaymentMethodId :: Maybe Int -- ^ 
+  , subscriptionPendingAddressChanges :: Maybe [PendingAddressChange] -- ^ Pending and ongoing temporary address changes
+  , subscriptionOrderNumber :: Maybe Text -- ^ Order number of subscription
+  , subscriptionPaymentMethod :: Maybe Text -- ^ Payment method of subscription
+  , subscriptionPaymentMethodId :: Maybe PaymentMethodId -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Subscription where
@@ -712,8 +712,8 @@ instance ToJSON Subscription where
 
 -- | 
 data SubscriptionDates = SubscriptionDates
-  { subscriptionDatesLenMonths :: Maybe Int -- ^ 
-  , subscriptionDatesLenDays :: Maybe Int -- ^ 
+  { subscriptionDatesLenMonths :: Maybe Int -- ^ Length of Subscription in months
+  , subscriptionDatesLenDays :: Maybe Int -- ^ Additional days (on top of months) for Subscription duration
   , subscriptionDatesStart :: Day -- ^ 
   , subscriptionDatesEnd :: Maybe Day -- ^ 
   , subscriptionDatesUnpaidBreak :: Maybe Day -- ^ 
@@ -756,11 +756,11 @@ instance ToJSON SubscriptionPauseEdit where
 
 -- | 
 data SubscriptionPayments = SubscriptionPayments
-  { subscriptionPaymentsSubsno :: Int -- ^ 
-  , subscriptionPaymentsName :: Text -- ^ 
+  { subscriptionPaymentsSubsno :: Int -- ^ Product subsno
+  , subscriptionPaymentsName :: Text -- ^ Package name
   , subscriptionPaymentsStartDate :: Day -- ^ 
   , subscriptionPaymentsLastDate :: Day -- ^ 
-  , subscriptionPaymentsPayments :: [Payment] -- ^ 
+  , subscriptionPaymentsPayments :: [Payment] -- ^ Payments
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON SubscriptionPayments where
@@ -785,7 +785,7 @@ instance ToJSON TemporaryAddressChange where
   toJSON = genericToJSON (removeFieldLabelPrefix False "temporaryAddressChange")
 
 
--- | 
+-- | Data for changing a temporary address change.
 data TemporaryAddressChangeDates = TemporaryAddressChangeDates
   { temporaryAddressChangeDatesOldStartDate :: Day -- ^ 
   , temporaryAddressChangeDatesNewStartDate :: Day -- ^ 
