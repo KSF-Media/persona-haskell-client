@@ -7,7 +7,6 @@ module Persona.Types (
   ActiveDays (..),
   Address (..),
   CancelSubscriptionReason (..),
-  ClaimType (..),
   CodeForTokenData (..),
   DeleteTempAddressChangeDates (..),
   DeliveryAddress (..),
@@ -129,17 +128,6 @@ instance ToJSON CancelSubscriptionReason where
 
 
 -- | 
-data ClaimType = ClaimType
-  { 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON ClaimType where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "claimType")
-instance ToJSON ClaimType where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "claimType")
-
-
--- | 
 data CodeForTokenData = CodeForTokenData
   { codeForTokenDataCode :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
@@ -182,6 +170,7 @@ data DeliveryReclamation = DeliveryReclamation
   , deliveryReclamationCustomerNumber :: Int -- ^ The identifier of the customer that made reclamation
   , deliveryReclamationSubscriptionNumber :: Int -- ^ The identifier of the subscription for which reclamation was made
   , deliveryReclamationDate :: Day -- ^ 
+  , deliveryReclamationPaper :: Maybe PaperCode -- ^ 
   , deliveryReclamationPublicationDate :: Day -- ^ 
   , deliveryReclamationClaim :: Text -- ^ The type of claim for the reclamation
   } deriving (Show, Eq, Generic, Data)
@@ -476,10 +465,11 @@ instance ToJSON LoginResponse where
   toJSON = genericToJSON (removeFieldLabelPrefix False "loginResponse")
 
 
--- | 
+-- | Data for a delivery reclamation creation.
 data NewDeliveryReclamation = NewDeliveryReclamation
-  { newDeliveryReclamationPublicationDate :: Day -- ^ 
-  , newDeliveryReclamationClaim :: ClaimType -- ^ 
+  { newDeliveryReclamationPaper :: Maybe PaperCode -- ^ 
+  , newDeliveryReclamationPublicationDate :: Day -- ^ 
+  , newDeliveryReclamationClaim :: Text -- ^ The type of claim for the reclamation
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON NewDeliveryReclamation where
@@ -592,7 +582,7 @@ instance ToJSON PackageOffer where
 
 -- | 
 data Paper = Paper
-  { paperCode :: Text -- ^ Identifying code of the paper
+  { paperCode :: PaperCode -- ^ 
   , paperName :: Text -- ^ The name of the paper
   } deriving (Show, Eq, Generic, Data)
 
