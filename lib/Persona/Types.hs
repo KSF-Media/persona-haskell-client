@@ -13,6 +13,7 @@ module Persona.Types (
   DeliveryReclamation (..),
   DescriptionFrequency (..),
   EntitlementAccess (..),
+  FaroUser (..),
   ForgotPasswordData (..),
   GdprConsent (..),
   InlineResponse400 (..),
@@ -29,6 +30,7 @@ module Persona.Types (
   InlineResponse415UnsupportedMediaType (..),
   InlineResponse500 (..),
   InlineResponse500InternalServerError (..),
+  JanrainUser (..),
   LegalConsent (..),
   LoginData (..),
   LoginDataSSO (..),
@@ -47,6 +49,8 @@ module Persona.Types (
   Payment (..),
   PendingAddressChange (..),
   Product (..),
+  SearchQuery (..),
+  SearchResult (..),
   Subscription (..),
   SubscriptionDates (..),
   SubscriptionPauseDates (..),
@@ -203,6 +207,21 @@ instance FromJSON EntitlementAccess where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "entitlementAccess")
 instance ToJSON EntitlementAccess where
   toJSON = genericToJSON (removeFieldLabelPrefix False "entitlementAccess")
+
+
+-- | 
+data FaroUser = FaroUser
+  { faroUserCusno :: Int -- ^ 
+  , faroUserName :: Text -- ^ 
+  , faroUserAddress :: Maybe Address -- ^ 
+  , faroUserEmail :: Maybe Text -- ^ 
+  , faroUserSubscriptions :: Maybe [Subscription] -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON FaroUser where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "faroUser")
+instance ToJSON FaroUser where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "faroUser")
 
 
 -- | 
@@ -398,6 +417,25 @@ instance FromJSON InlineResponse500InternalServerError where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse500InternalServerError")
 instance ToJSON InlineResponse500InternalServerError where
   toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse500InternalServerError")
+
+
+-- | 
+data JanrainUser = JanrainUser
+  { janrainUserUuid :: UUID -- ^ 
+  , janrainUserEmail :: Maybe Text -- ^ 
+  , janrainUserFirstName :: Maybe Text -- ^ 
+  , janrainUserLastName :: Maybe Text -- ^ 
+  , janrainUserMiddleName :: Maybe Text -- ^ 
+  , janrainUserConsent :: [GdprConsent] -- ^ 
+  , janrainUserLegal :: [LegalConsent] -- ^ 
+  , janrainUserCusno :: Maybe Text -- ^ 
+  , janrainUserOtherCusnos :: Maybe [Text] -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON JanrainUser where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "janrainUser")
+instance ToJSON JanrainUser where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "janrainUser")
 
 
 -- | 
@@ -670,6 +708,30 @@ instance FromJSON Product where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "product")
 instance ToJSON Product where
   toJSON = genericToJSON (removeFieldLabelPrefix False "product")
+
+
+-- | 
+data SearchQuery = SearchQuery
+  { searchQueryFaroLimit :: Int -- ^ 
+  , searchQueryQuery :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON SearchQuery where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "searchQuery")
+instance ToJSON SearchQuery where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "searchQuery")
+
+
+-- | 
+data SearchResult = SearchResult
+  { searchResultJanrain :: Maybe JanrainUser -- ^ 
+  , searchResultFaro :: [FaroUser] -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON SearchResult where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "searchResult")
+instance ToJSON SearchResult where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "searchResult")
 
 
 -- | 

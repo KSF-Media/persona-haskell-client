@@ -121,7 +121,7 @@ type PersonaAPI
     =    "account" :> "codeForToken" :> ReqBody '[JSON] CodeForTokenData :> Verb 'POST 200 '[JSON] TokenResponse -- 'accountCodeForTokenPost' route
     :<|> "account" :> "forgotPass" :> ReqBody '[JSON] ForgotPasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountForgotPassPost' route
     :<|> "account" :> "resetForgottenPassword" :> ReqBody '[JSON] UpdatePasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountResetForgottenPasswordPost' route
-    :<|> "admin" :> Capture "uuid" UUID :> Header "AuthUser" UUID :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] User -- 'adminUuidGet' route
+    :<|> "admin" :> "search" :> ReqBody '[JSON] SearchQuery :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [SearchResult] -- 'adminSearchPost' route
     :<|> "entitlements" :> "allow" :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowPost' route
     :<|> "entitlements" :> "allow" :> Capture "uuid" UUID :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowUuidPost' route
     :<|> "entitlements" :> Verb 'GET 200 '[JSON] ((Map.Map String [Text])) -- 'entitlementsGet' route
@@ -170,7 +170,7 @@ data PersonaBackend m = PersonaBackend
   { accountCodeForTokenPost :: CodeForTokenData -> m TokenResponse{- ^  -}
   , accountForgotPassPost :: ForgotPasswordData -> m [Value]{- ^  -}
   , accountResetForgottenPasswordPost :: UpdatePasswordData -> m [Value]{- ^  -}
-  , adminUuidGet :: UUID -> Maybe UUID -> Maybe Text -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , adminSearchPost :: SearchQuery -> Maybe UUID -> Maybe Text -> m [SearchResult]{- ^  -}
   , entitlementsAllowPost :: EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsAllowUuidPost :: UUID -> EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsGet :: m ((Map.Map String [Text])){- ^  -}
@@ -179,7 +179,7 @@ data PersonaBackend m = PersonaBackend
   , loginSsoPost :: LoginDataSSO -> m LoginResponse{- ^  -}
   , loginUuidDelete :: UUID -> Maybe Bool -> Maybe Text -> m [Value]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersPost :: NewUser -> m LoginResponse{- ^  -}
-  , usersSearchGet :: Maybe Text -> Maybe UUID -> Maybe Text -> m [User]{- ^  -}
+  , usersSearchGet :: Maybe Text -> Maybe UUID -> Maybe Text -> m [User]{- ^ deprecated -}
   , usersTemporaryPost :: NewTemporaryUser -> m LoginResponse{- ^  -}
   , usersUuidEntitlementGet :: UUID -> Maybe UUID -> Maybe Text -> Maybe Text -> m [Text]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidGdprPut :: UUID -> [GdprConsent] -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
@@ -223,7 +223,7 @@ createPersonaClient = PersonaBackend{..}
     ((coerce -> accountCodeForTokenPost) :<|>
      (coerce -> accountForgotPassPost) :<|>
      (coerce -> accountResetForgottenPasswordPost) :<|>
-     (coerce -> adminUuidGet) :<|>
+     (coerce -> adminSearchPost) :<|>
      (coerce -> entitlementsAllowPost) :<|>
      (coerce -> entitlementsAllowUuidPost) :<|>
      (coerce -> entitlementsGet) :<|>
@@ -289,7 +289,7 @@ runPersonaServer Config{..} backend = do
       (coerce accountCodeForTokenPost :<|>
        coerce accountForgotPassPost :<|>
        coerce accountResetForgottenPasswordPost :<|>
-       coerce adminUuidGet :<|>
+       coerce adminSearchPost :<|>
        coerce entitlementsAllowPost :<|>
        coerce entitlementsAllowUuidPost :<|>
        coerce entitlementsGet :<|>
