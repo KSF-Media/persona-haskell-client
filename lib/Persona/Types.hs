@@ -174,7 +174,7 @@ data DeliveryReclamation = DeliveryReclamation
   , deliveryReclamationCustomerNumber :: Int -- ^ The identifier of the customer that made reclamation
   , deliveryReclamationSubscriptionNumber :: Int -- ^ The identifier of the subscription for which reclamation was made
   , deliveryReclamationDate :: Day -- ^ 
-  , deliveryReclamationPaper :: Maybe PaperCode -- ^ 
+  , deliveryReclamationPaper :: Maybe Text -- ^ 
   , deliveryReclamationPublicationDate :: Day -- ^ 
   , deliveryReclamationClaim :: Text -- ^ The type of claim for the reclamation
   } deriving (Show, Eq, Generic, Data)
@@ -505,7 +505,7 @@ instance ToJSON LoginResponse where
 
 -- | Data for a delivery reclamation creation.
 data NewDeliveryReclamation = NewDeliveryReclamation
-  { newDeliveryReclamationPaper :: Maybe PaperCode -- ^ 
+  { newDeliveryReclamationPaper :: Maybe Text -- ^ 
   , newDeliveryReclamationPublicationDate :: Day -- ^ 
   , newDeliveryReclamationClaim :: Text -- ^ The type of claim for the reclamation
   } deriving (Show, Eq, Generic, Data)
@@ -608,8 +608,8 @@ instance ToJSON PackageDescription where
 -- | 
 data PackageOffer = PackageOffer
   { packageOfferMonths :: Int -- ^ Duration of the offer
-  , packageOfferTotalPrice :: Price -- ^ 
-  , packageOfferMonthlyPrice :: Price -- ^ 
+  , packageOfferTotalPrice :: Int -- ^ Amount of cents that has to be paid
+  , packageOfferMonthlyPrice :: Int -- ^ Amount of cents that has to be paid
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PackageOffer where
@@ -620,7 +620,7 @@ instance ToJSON PackageOffer where
 
 -- | 
 data Paper = Paper
-  { paperCode :: PaperCode -- ^ 
+  { paperCode :: Text -- ^ 
   , paperName :: Text -- ^ The name of the paper
   } deriving (Show, Eq, Generic, Data)
 
@@ -753,7 +753,7 @@ data Subscription = Subscription
   , subscriptionPendingAddressChanges :: Maybe [PendingAddressChange] -- ^ Pending and ongoing temporary address changes
   , subscriptionOrderNumber :: Maybe Text -- ^ Order number of subscription
   , subscriptionPaymentMethod :: Maybe Text -- ^ Payment method of subscription
-  , subscriptionPaymentMethodId :: Maybe PaymentMethodId -- ^ 
+  , subscriptionPaymentMethodId :: Maybe Int -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Subscription where
