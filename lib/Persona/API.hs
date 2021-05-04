@@ -129,6 +129,7 @@ type PersonaAPI
     :<|> "login" :> "some" :> ReqBody '[JSON] LoginDataSoMe :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSomePost' route
     :<|> "login" :> "sso" :> ReqBody '[JSON] LoginDataSSO :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSsoPost' route
     :<|> "login" :> Capture "uuid" UUID :> QueryParam "everywhere" Bool :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] [Value] -- 'loginUuidDelete' route
+    :<|> "users" :> "admin" :> ReqBody '[JSON] AdminNewUser :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersAdminPost' route
     :<|> "users" :> ReqBody '[JSON] NewUser :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersPost' route
     :<|> "users" :> "search" :> QueryParam "query" Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [User] -- 'usersSearchGet' route
     :<|> "users" :> "temporary" :> ReqBody '[JSON] NewTemporaryUser :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersTemporaryPost' route
@@ -178,6 +179,7 @@ data PersonaBackend m = PersonaBackend
   , loginSomePost :: LoginDataSoMe -> m LoginResponse{- ^  -}
   , loginSsoPost :: LoginDataSSO -> m LoginResponse{- ^  -}
   , loginUuidDelete :: UUID -> Maybe Bool -> Maybe Text -> m [Value]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersAdminPost :: AdminNewUser -> Maybe UUID -> Maybe Text -> m LoginResponse{- ^  -}
   , usersPost :: NewUser -> m LoginResponse{- ^  -}
   , usersSearchGet :: Maybe Text -> Maybe UUID -> Maybe Text -> m [User]{- ^ deprecated -}
   , usersTemporaryPost :: NewTemporaryUser -> m LoginResponse{- ^  -}
@@ -231,6 +233,7 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> loginSomePost) :<|>
      (coerce -> loginSsoPost) :<|>
      (coerce -> loginUuidDelete) :<|>
+     (coerce -> usersAdminPost) :<|>
      (coerce -> usersPost) :<|>
      (coerce -> usersSearchGet) :<|>
      (coerce -> usersTemporaryPost) :<|>
@@ -297,6 +300,7 @@ runPersonaServer Config{..} backend = do
        coerce loginSomePost :<|>
        coerce loginSsoPost :<|>
        coerce loginUuidDelete :<|>
+       coerce usersAdminPost :<|>
        coerce usersPost :<|>
        coerce usersSearchGet :<|>
        coerce usersTemporaryPost :<|>

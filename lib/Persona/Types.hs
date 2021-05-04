@@ -6,6 +6,7 @@
 module Persona.Types (
   ActiveDays (..),
   Address (..),
+  AdminNewUser (..),
   CancelSubscriptionReason (..),
   CodeForTokenData (..),
   DeleteTempAddressChangeDates (..),
@@ -117,6 +118,18 @@ instance FromJSON Address where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "address")
 instance ToJSON Address where
   toJSON = genericToJSON (removeFieldLabelPrefix False "address")
+
+
+-- | 
+data AdminNewUser = AdminNewUser
+  { adminNewUserUser :: NewUser -- ^ 
+  , adminNewUserCusno :: Maybe Int -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON AdminNewUser where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "adminNewUser")
+instance ToJSON AdminNewUser where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "adminNewUser")
 
 
 -- | Cancel reason
