@@ -122,6 +122,7 @@ type PersonaAPI
     :<|> "account" :> "forgotPass" :> ReqBody '[JSON] ForgotPasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountForgotPassPost' route
     :<|> "account" :> "resetForgottenPassword" :> ReqBody '[JSON] UpdatePasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountResetForgottenPasswordPost' route
     :<|> "admin" :> "search" :> ReqBody '[JSON] SearchQuery :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [SearchResult] -- 'adminSearchPost' route
+    :<|> "admin" :> "user" :> ReqBody '[JSON] AdminNewUser :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] LoginResponse -- 'adminUserPost' route
     :<|> "entitlements" :> "allow" :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowPost' route
     :<|> "entitlements" :> "allow" :> Capture "uuid" UUID :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowUuidPost' route
     :<|> "entitlements" :> Verb 'GET 200 '[JSON] ((Map.Map String [Text])) -- 'entitlementsGet' route
@@ -129,7 +130,6 @@ type PersonaAPI
     :<|> "login" :> "some" :> ReqBody '[JSON] LoginDataSoMe :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSomePost' route
     :<|> "login" :> "sso" :> ReqBody '[JSON] LoginDataSSO :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSsoPost' route
     :<|> "login" :> Capture "uuid" UUID :> QueryParam "everywhere" Bool :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] [Value] -- 'loginUuidDelete' route
-    :<|> "users" :> "admin" :> ReqBody '[JSON] AdminNewUser :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersAdminPost' route
     :<|> "users" :> ReqBody '[JSON] NewUser :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersPost' route
     :<|> "users" :> "search" :> QueryParam "query" Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [User] -- 'usersSearchGet' route
     :<|> "users" :> "temporary" :> ReqBody '[JSON] NewTemporaryUser :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersTemporaryPost' route
@@ -172,6 +172,7 @@ data PersonaBackend m = PersonaBackend
   , accountForgotPassPost :: ForgotPasswordData -> m [Value]{- ^  -}
   , accountResetForgottenPasswordPost :: UpdatePasswordData -> m [Value]{- ^  -}
   , adminSearchPost :: SearchQuery -> Maybe UUID -> Maybe Text -> m [SearchResult]{- ^  -}
+  , adminUserPost :: AdminNewUser -> Maybe UUID -> Maybe Text -> m LoginResponse{- ^  -}
   , entitlementsAllowPost :: EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsAllowUuidPost :: UUID -> EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsGet :: m ((Map.Map String [Text])){- ^  -}
@@ -179,7 +180,6 @@ data PersonaBackend m = PersonaBackend
   , loginSomePost :: LoginDataSoMe -> m LoginResponse{- ^  -}
   , loginSsoPost :: LoginDataSSO -> m LoginResponse{- ^  -}
   , loginUuidDelete :: UUID -> Maybe Bool -> Maybe Text -> m [Value]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
-  , usersAdminPost :: AdminNewUser -> Maybe UUID -> Maybe Text -> m LoginResponse{- ^  -}
   , usersPost :: NewUser -> m LoginResponse{- ^  -}
   , usersSearchGet :: Maybe Text -> Maybe UUID -> Maybe Text -> m [User]{- ^ deprecated -}
   , usersTemporaryPost :: NewTemporaryUser -> m LoginResponse{- ^  -}
@@ -226,6 +226,7 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> accountForgotPassPost) :<|>
      (coerce -> accountResetForgottenPasswordPost) :<|>
      (coerce -> adminSearchPost) :<|>
+     (coerce -> adminUserPost) :<|>
      (coerce -> entitlementsAllowPost) :<|>
      (coerce -> entitlementsAllowUuidPost) :<|>
      (coerce -> entitlementsGet) :<|>
@@ -233,7 +234,6 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> loginSomePost) :<|>
      (coerce -> loginSsoPost) :<|>
      (coerce -> loginUuidDelete) :<|>
-     (coerce -> usersAdminPost) :<|>
      (coerce -> usersPost) :<|>
      (coerce -> usersSearchGet) :<|>
      (coerce -> usersTemporaryPost) :<|>
@@ -293,6 +293,7 @@ runPersonaServer Config{..} backend = do
        coerce accountForgotPassPost :<|>
        coerce accountResetForgottenPasswordPost :<|>
        coerce adminSearchPost :<|>
+       coerce adminUserPost :<|>
        coerce entitlementsAllowPost :<|>
        coerce entitlementsAllowUuidPost :<|>
        coerce entitlementsGet :<|>
@@ -300,7 +301,6 @@ runPersonaServer Config{..} backend = do
        coerce loginSomePost :<|>
        coerce loginSsoPost :<|>
        coerce loginUuidDelete :<|>
-       coerce usersAdminPost :<|>
        coerce usersPost :<|>
        coerce usersSearchGet :<|>
        coerce usersTemporaryPost :<|>
