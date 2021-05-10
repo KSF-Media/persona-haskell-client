@@ -118,9 +118,8 @@ formatSeparatedQueryList char = T.intercalate (T.singleton char) . map toQueryPa
 
 -- | Servant type-level API, generated from the OpenAPI spec for Persona.
 type PersonaAPI
-    =    "account" :> "codeForToken" :> ReqBody '[JSON] CodeForTokenData :> Verb 'POST 200 '[JSON] TokenResponse -- 'accountCodeForTokenPost' route
-    :<|> "account" :> "forgotPass" :> ReqBody '[JSON] ForgotPasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountForgotPassPost' route
-    :<|> "account" :> "resetForgottenPassword" :> ReqBody '[JSON] UpdatePasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountResetForgottenPasswordPost' route
+    =    "account" :> "password" :> "forgot" :> ReqBody '[JSON] ForgotPasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordForgotPost' route
+    :<|> "account" :> "password" :> "reset" :> ReqBody '[JSON] UpdatePasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordResetPost' route
     :<|> "admin" :> "search" :> ReqBody '[JSON] SearchQuery :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [SearchResult] -- 'adminSearchPost' route
     :<|> "admin" :> "user" :> ReqBody '[JSON] AdminNewUser :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] LoginResponse -- 'adminUserPost' route
     :<|> "entitlements" :> "allow" :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowPost' route
@@ -168,9 +167,8 @@ newtype PersonaClientError = PersonaClientError ClientError
 -- is a backend that executes actions by sending HTTP requests (see @createPersonaClient@). Alternatively, provided
 -- a backend, the API can be served using @runPersonaServer@.
 data PersonaBackend m = PersonaBackend
-  { accountCodeForTokenPost :: CodeForTokenData -> m TokenResponse{- ^  -}
-  , accountForgotPassPost :: ForgotPasswordData -> m [Value]{- ^  -}
-  , accountResetForgottenPasswordPost :: UpdatePasswordData -> m [Value]{- ^  -}
+  { accountPasswordForgotPost :: ForgotPasswordData -> m [Value]{- ^  -}
+  , accountPasswordResetPost :: UpdatePasswordData -> m [Value]{- ^  -}
   , adminSearchPost :: SearchQuery -> Maybe UUID -> Maybe Text -> m [SearchResult]{- ^  -}
   , adminUserPost :: AdminNewUser -> Maybe UUID -> Maybe Text -> m LoginResponse{- ^  -}
   , entitlementsAllowPost :: EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
@@ -222,9 +220,8 @@ instance MonadIO PersonaClient where
 createPersonaClient :: PersonaBackend PersonaClient
 createPersonaClient = PersonaBackend{..}
   where
-    ((coerce -> accountCodeForTokenPost) :<|>
-     (coerce -> accountForgotPassPost) :<|>
-     (coerce -> accountResetForgottenPasswordPost) :<|>
+    ((coerce -> accountPasswordForgotPost) :<|>
+     (coerce -> accountPasswordResetPost) :<|>
      (coerce -> adminSearchPost) :<|>
      (coerce -> adminUserPost) :<|>
      (coerce -> entitlementsAllowPost) :<|>
@@ -289,9 +286,8 @@ runPersonaServer Config{..} backend = do
   liftIO $ Warp.runSettings warpSettings $ serve (Proxy :: Proxy PersonaAPI) (serverFromBackend backend)
   where
     serverFromBackend PersonaBackend{..} =
-      (coerce accountCodeForTokenPost :<|>
-       coerce accountForgotPassPost :<|>
-       coerce accountResetForgottenPasswordPost :<|>
+      (coerce accountPasswordForgotPost :<|>
+       coerce accountPasswordResetPost :<|>
        coerce adminSearchPost :<|>
        coerce adminUserPost :<|>
        coerce entitlementsAllowPost :<|>

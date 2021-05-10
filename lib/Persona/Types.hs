@@ -8,7 +8,6 @@ module Persona.Types (
   Address (..),
   AdminNewUser (..),
   CancelSubscriptionReason (..),
-  CodeForTokenData (..),
   DeleteTempAddressChangeDates (..),
   DeliveryAddress (..),
   DeliveryReclamation (..),
@@ -59,7 +58,6 @@ module Persona.Types (
   SubscriptionPayments (..),
   TemporaryAddressChange (..),
   TemporaryAddressChangeDates (..),
-  TokenResponse (..),
   UpdatePasswordData (..),
   User (..),
   UserUpdate (..),
@@ -142,17 +140,6 @@ instance FromJSON CancelSubscriptionReason where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "cancelSubscriptionReason")
 instance ToJSON CancelSubscriptionReason where
   toJSON = genericToJSON (removeFieldLabelPrefix False "cancelSubscriptionReason")
-
-
--- | 
-data CodeForTokenData = CodeForTokenData
-  { codeForTokenDataCode :: Text -- ^ 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON CodeForTokenData where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "codeForTokenData")
-instance ToJSON CodeForTokenData where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "codeForTokenData")
 
 
 -- | 
@@ -864,21 +851,9 @@ instance ToJSON TemporaryAddressChangeDates where
 
 
 -- | 
-data TokenResponse = TokenResponse
-  { tokenResponseAccessUnderscoretoken :: Text -- ^ 
-  , tokenResponseStatus :: Text -- ^ 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON TokenResponse where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "tokenResponse")
-instance ToJSON TokenResponse where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "tokenResponse")
-
-
--- | 
 data UpdatePasswordData = UpdatePasswordData
   { updatePasswordDataPassword :: Text -- ^ 
-  , updatePasswordDataPasswordUnderscoreconfirm :: Text -- ^ 
+  , updatePasswordDataConfirmPassword :: Text -- ^ 
   , updatePasswordDataToken :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
