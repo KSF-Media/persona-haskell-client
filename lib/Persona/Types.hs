@@ -852,8 +852,8 @@ instance ToJSON TemporaryAddressChangeDates where
 
 -- | 
 data UpdatePasswordData = UpdatePasswordData
-  { updatePasswordDataPassword :: Text -- ^ 
-  , updatePasswordDataConfirmPassword :: Text -- ^ 
+  { updatePasswordDataPassword :: Maybe Text -- ^ 
+  , updatePasswordDataConfirmPassword :: Maybe Text -- ^ 
   , updatePasswordDataToken :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
