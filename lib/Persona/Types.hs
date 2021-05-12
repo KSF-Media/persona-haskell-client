@@ -539,7 +539,7 @@ instance ToJSON NewUser where
 data Package = Package
   { packageId :: Text -- ^ Package identifier
   , packageName :: Text -- ^ Package name
-  , packageDescription :: [Text] -- ^ Package description
+  , packageInfo :: [Text] -- ^ Package description
   , packagePaper :: Paper -- ^ 
   , packageDigitalOnly :: Bool -- ^ All products in this package are digital
   , packageProducts :: [Product] -- ^ The Products contained in a package
