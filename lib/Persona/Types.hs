@@ -11,7 +11,6 @@ module Persona.Types (
   DeleteTempAddressChangeDates (..),
   DeliveryAddress (..),
   DeliveryReclamation (..),
-  DescriptionFrequency (..),
   EntitlementAccess (..),
   FaroUser (..),
   ForgotPasswordData (..),
@@ -41,7 +40,6 @@ module Persona.Types (
   NewUser (..),
   Package (..),
   PackageCampaign (..),
-  PackageDescription (..),
   PackageOffer (..),
   Paper (..),
   PastTemporaryAddress (..),
@@ -183,18 +181,6 @@ instance FromJSON DeliveryReclamation where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "deliveryReclamation")
 instance ToJSON DeliveryReclamation where
   toJSON = genericToJSON (removeFieldLabelPrefix False "deliveryReclamation")
-
-
--- | 
-data DescriptionFrequency = DescriptionFrequency
-  { descriptionFrequencyAmount :: Int -- ^ Frequency number for the package
-  , descriptionFrequencyUnit :: Text -- ^ Unit in which the number is measured
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON DescriptionFrequency where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "descriptionFrequency")
-instance ToJSON DescriptionFrequency where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "descriptionFrequency")
 
 
 -- | 
@@ -553,6 +539,7 @@ instance ToJSON NewUser where
 data Package = Package
   { packageId :: Text -- ^ Package identifier
   , packageName :: Text -- ^ Package name
+  , packageDescription :: [Text] -- ^ Package description
   , packagePaper :: Paper -- ^ 
   , packageDigitalOnly :: Bool -- ^ All products in this package are digital
   , packageProducts :: [Product] -- ^ The Products contained in a package
@@ -561,7 +548,6 @@ data Package = Package
   , packageNextDelivery :: Maybe Day -- ^ 
   , packageCanPause :: Bool -- ^ Does the package allow delivery pauses
   , packageCanTempAddr :: Bool -- ^ Does the package allow temporary address changes
-  , packageDescription :: Maybe PackageDescription -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Package where
@@ -584,25 +570,6 @@ instance FromJSON PackageCampaign where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "packageCampaign")
 instance ToJSON PackageCampaign where
   toJSON = genericToJSON (removeFieldLabelPrefix False "packageCampaign")
-
-
--- | 
-data PackageDescription = PackageDescription
-  { packageDescriptionBrand :: Text -- ^ Brand name
-  , packageDescriptionBrandLong :: Text -- ^ Brand name, long
-  , packageDescriptionDescShort :: Text -- ^ Short description
-  , packageDescriptionDescLong :: Text -- ^ Long description
-  , packageDescriptionUrl :: Text -- ^ Url for the current package
-  , packageDescriptionDays :: Text -- ^ How many days the package is active
-  , packageDescriptionWeekdays :: Text -- ^ Weekdays for which the package is active
-  , packageDescriptionFrequency :: DescriptionFrequency -- ^ 
-  , packageDescriptionIncludes :: [Text] -- ^ Entitlements included in the package
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON PackageDescription where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "packageDescription")
-instance ToJSON PackageDescription where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "packageDescription")
 
 
 -- | 
