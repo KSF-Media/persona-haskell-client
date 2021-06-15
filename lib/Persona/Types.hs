@@ -859,6 +859,7 @@ data UserUpdate = UserUpdate
   , userUpdateAddress :: Maybe UserUpdateAddress -- ^ 
   , userUpdateEmail :: Maybe Text -- ^ 
   , userUpdatePendingAddressChanges :: Maybe [Value] -- ^ 
+  , userUpdateUpdateCusno :: Maybe Int -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON UserUpdate where

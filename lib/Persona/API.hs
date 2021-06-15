@@ -130,7 +130,6 @@ type PersonaAPI
     :<|> "login" :> "sso" :> ReqBody '[JSON] LoginDataSSO :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSsoPost' route
     :<|> "login" :> Capture "uuid" UUID :> QueryParam "everywhere" Bool :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] [Value] -- 'loginUuidDelete' route
     :<|> "users" :> ReqBody '[JSON] NewUser :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersPost' route
-    :<|> "users" :> "search" :> QueryParam "query" Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [User] -- 'usersSearchGet' route
     :<|> "users" :> "temporary" :> ReqBody '[JSON] NewTemporaryUser :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersTemporaryPost' route
     :<|> "users" :> Capture "uuid" UUID :> "entitlement" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] [Text] -- 'usersUuidEntitlementGet' route
     :<|> "users" :> Capture "uuid" UUID :> "gdpr" :> ReqBody '[JSON] [GdprConsent] :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidGdprPut' route
@@ -179,7 +178,6 @@ data PersonaBackend m = PersonaBackend
   , loginSsoPost :: LoginDataSSO -> m LoginResponse{- ^  -}
   , loginUuidDelete :: UUID -> Maybe Bool -> Maybe Text -> m [Value]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersPost :: NewUser -> m LoginResponse{- ^  -}
-  , usersSearchGet :: Maybe Text -> Maybe UUID -> Maybe Text -> m [User]{- ^ deprecated -}
   , usersTemporaryPost :: NewTemporaryUser -> m LoginResponse{- ^  -}
   , usersUuidEntitlementGet :: UUID -> Maybe UUID -> Maybe Text -> Maybe Text -> m [Text]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidGdprPut :: UUID -> [GdprConsent] -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
@@ -232,7 +230,6 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> loginSsoPost) :<|>
      (coerce -> loginUuidDelete) :<|>
      (coerce -> usersPost) :<|>
-     (coerce -> usersSearchGet) :<|>
      (coerce -> usersTemporaryPost) :<|>
      (coerce -> usersUuidEntitlementGet) :<|>
      (coerce -> usersUuidGdprPut) :<|>
@@ -298,7 +295,6 @@ runPersonaServer Config{..} backend = do
        coerce loginSsoPost :<|>
        coerce loginUuidDelete :<|>
        coerce usersPost :<|>
-       coerce usersSearchGet :<|>
        coerce usersTemporaryPost :<|>
        coerce usersUuidEntitlementGet :<|>
        coerce usersUuidGdprPut :<|>
