@@ -135,6 +135,8 @@ type PersonaAPI
     :<|> "users" :> Capture "uuid" UUID :> "gdpr" :> ReqBody '[JSON] [GdprConsent] :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidGdprPut' route
     :<|> "users" :> Capture "uuid" UUID :> Header "AuthUser" UUID :> Header "Authorization" Text :> Header "Cache-Control" Text :> Verb 'GET 200 '[JSON] User -- 'usersUuidGet' route
     :<|> "users" :> Capture "uuid" UUID :> "legal" :> ReqBody '[JSON] [LegalConsent] :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidLegalPut' route
+    :<|> "users" :> Capture "uuid" UUID :> "newsletters" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] NewsletterSubscriptions -- 'usersUuidNewslettersGet' route
+    :<|> "users" :> Capture "uuid" UUID :> "newsletters" :> ReqBody '[JSON] NewsletterSubscriptions :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] NewsletterSubscriptions -- 'usersUuidNewslettersPut' route
     :<|> "users" :> Capture "uuid" UUID :> "password" :> ReqBody '[JSON] UserUpdatePassword :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidPasswordPut' route
     :<|> "users" :> Capture "uuid" UUID :> ReqBody '[JSON] UserUpdate :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] User -- 'usersUuidPatch' route
     :<|> "users" :> Capture "uuid" UUID :> "payments" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [SubscriptionPayments] -- 'usersUuidPaymentsGet' route
@@ -183,6 +185,8 @@ data PersonaBackend m = PersonaBackend
   , usersUuidGdprPut :: UUID -> [GdprConsent] -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidGet :: UUID -> Maybe UUID -> Maybe Text -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidLegalPut :: UUID -> [LegalConsent] -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidNewslettersGet :: UUID -> Maybe UUID -> Maybe Text -> m NewsletterSubscriptions{- ^ Get list of newsletter subscriptions from mailchimp -}
+  , usersUuidNewslettersPut :: UUID -> NewsletterSubscriptions -> Maybe UUID -> Maybe Text -> m NewsletterSubscriptions{- ^ Get list of newsletter subscriptions from mailchimp -}
   , usersUuidPasswordPut :: UUID -> UserUpdatePassword -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidPatch :: UUID -> UserUpdate -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidPaymentsGet :: UUID -> Maybe UUID -> Maybe Text -> m [SubscriptionPayments]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
@@ -235,6 +239,8 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> usersUuidGdprPut) :<|>
      (coerce -> usersUuidGet) :<|>
      (coerce -> usersUuidLegalPut) :<|>
+     (coerce -> usersUuidNewslettersGet) :<|>
+     (coerce -> usersUuidNewslettersPut) :<|>
      (coerce -> usersUuidPasswordPut) :<|>
      (coerce -> usersUuidPatch) :<|>
      (coerce -> usersUuidPaymentsGet) :<|>
@@ -300,6 +306,8 @@ runPersonaServer Config{..} backend = do
        coerce usersUuidGdprPut :<|>
        coerce usersUuidGet :<|>
        coerce usersUuidLegalPut :<|>
+       coerce usersUuidNewslettersGet :<|>
+       coerce usersUuidNewslettersPut :<|>
        coerce usersUuidPasswordPut :<|>
        coerce usersUuidPatch :<|>
        coerce usersUuidPaymentsGet :<|>
