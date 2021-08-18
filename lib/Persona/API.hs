@@ -140,6 +140,7 @@ type PersonaAPI
     :<|> "users" :> Capture "uuid" UUID :> "password" :> ReqBody '[JSON] UserUpdatePassword :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] User -- 'usersUuidPasswordPut' route
     :<|> "users" :> Capture "uuid" UUID :> ReqBody '[JSON] UserUpdate :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] User -- 'usersUuidPatch' route
     :<|> "users" :> Capture "uuid" UUID :> "payments" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [SubscriptionPayments] -- 'usersUuidPaymentsGet' route
+    :<|> "users" :> Capture "uuid" UUID :> "scope" :> QueryParam "scope" Text :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] () -- 'usersUuidScopeGet' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] DeleteTempAddressChangeDates :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangeDelete' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] TemporaryAddressChangeDates :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PATCH 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangePatch' route
     :<|> "users" :> Capture "uuid" UUID :> "subscriptions" :> Capture "subsno" Int :> "addressChange" :> ReqBody '[JSON] TemporaryAddressChange :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Subscription -- 'usersUuidSubscriptionsSubsnoAddressChangePost' route
@@ -190,6 +191,7 @@ data PersonaBackend m = PersonaBackend
   , usersUuidPasswordPut :: UUID -> UserUpdatePassword -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidPatch :: UUID -> UserUpdate -> Maybe UUID -> Maybe Text -> m User{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidPaymentsGet :: UUID -> Maybe UUID -> Maybe Text -> m [SubscriptionPayments]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
+  , usersUuidScopeGet :: UUID -> Maybe Text -> Maybe Text -> m (){- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidSubscriptionsSubsnoAddressChangeDelete :: UUID -> Int -> DeleteTempAddressChangeDates -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidSubscriptionsSubsnoAddressChangePatch :: UUID -> Int -> TemporaryAddressChangeDates -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersUuidSubscriptionsSubsnoAddressChangePost :: UUID -> Int -> TemporaryAddressChange -> Maybe UUID -> Maybe Text -> m Subscription{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
@@ -244,6 +246,7 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> usersUuidPasswordPut) :<|>
      (coerce -> usersUuidPatch) :<|>
      (coerce -> usersUuidPaymentsGet) :<|>
+     (coerce -> usersUuidScopeGet) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoAddressChangeDelete) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoAddressChangePatch) :<|>
      (coerce -> usersUuidSubscriptionsSubsnoAddressChangePost) :<|>
@@ -311,6 +314,7 @@ runPersonaServer Config{..} backend = do
        coerce usersUuidPasswordPut :<|>
        coerce usersUuidPatch :<|>
        coerce usersUuidPaymentsGet :<|>
+       coerce usersUuidScopeGet :<|>
        coerce usersUuidSubscriptionsSubsnoAddressChangeDelete :<|>
        coerce usersUuidSubscriptionsSubsnoAddressChangePatch :<|>
        coerce usersUuidSubscriptionsSubsnoAddressChangePost :<|>
