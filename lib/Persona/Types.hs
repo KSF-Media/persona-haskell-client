@@ -850,6 +850,7 @@ data User = User
   , userEmail :: Text -- ^ 
   , userFirstName :: Maybe Text -- ^ 
   , userLastName :: Maybe Text -- ^ 
+  , userPhone :: Maybe Text -- ^ 
   , userAddress :: Maybe Address -- ^ 
   , userCusno :: Int -- ^ 
   , userSubs :: [Subscription] -- ^ 
@@ -872,6 +873,7 @@ data UserUpdate = UserUpdate
   , userUpdateLastName :: Maybe Text -- ^ 
   , userUpdateAddress :: Maybe UserUpdateAddress -- ^ 
   , userUpdateEmail :: Maybe Text -- ^ 
+  , userUpdatePhone :: Maybe Text -- ^ 
   , userUpdatePendingAddressChanges :: Maybe [Value] -- ^ 
   , userUpdateUpdateCusno :: Maybe Int -- ^ 
   } deriving (Show, Eq, Generic, Data)
