@@ -641,8 +641,8 @@ instance ToJSON PausedSubscription where
 -- | 
 data Payment = Payment
   { paymentInvno :: Int -- ^ Payment invoice ID
-  , paymentDate :: Day -- ^ 
-  , paymentDueDate :: Day -- ^ 
+  , paymentDate :: Maybe Day -- ^ 
+  , paymentDueDate :: Maybe Day -- ^ 
   , paymentExpenses :: Double -- ^ 
   , paymentInterest :: Double -- ^ 
   , paymentVat :: Double -- ^ 
