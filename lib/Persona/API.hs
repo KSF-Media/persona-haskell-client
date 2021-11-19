@@ -122,6 +122,7 @@ type PersonaAPI
     :<|> "account" :> "password" :> "reset" :> ReqBody '[JSON] UpdatePasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordResetPost' route
     :<|> "admin" :> "search" :> ReqBody '[JSON] SearchQuery :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [SearchResult] -- 'adminSearchPost' route
     :<|> "admin" :> "user" :> ReqBody '[JSON] AdminNewUser :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] LoginResponse -- 'adminUserPost' route
+    :<|> "entitlements" :> "allow" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] Text -- 'entitlementsAllowGet' route
     :<|> "entitlements" :> "allow" :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowPost' route
     :<|> "entitlements" :> "allow" :> Capture "uuid" UUID :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowUuidPost' route
     :<|> "entitlements" :> Verb 'GET 200 '[JSON] ((Map.Map String [Text])) -- 'entitlementsGet' route
@@ -173,6 +174,7 @@ data PersonaBackend m = PersonaBackend
   , accountPasswordResetPost :: UpdatePasswordData -> m [Value]{- ^  -}
   , adminSearchPost :: SearchQuery -> Maybe UUID -> Maybe Text -> m [SearchResult]{- ^  -}
   , adminUserPost :: AdminNewUser -> Maybe UUID -> Maybe Text -> m LoginResponse{- ^  -}
+  , entitlementsAllowGet :: Maybe UUID -> Maybe Text -> m Text{- ^  -}
   , entitlementsAllowPost :: EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsAllowUuidPost :: UUID -> EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsGet :: m ((Map.Map String [Text])){- ^  -}
@@ -228,6 +230,7 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> accountPasswordResetPost) :<|>
      (coerce -> adminSearchPost) :<|>
      (coerce -> adminUserPost) :<|>
+     (coerce -> entitlementsAllowGet) :<|>
      (coerce -> entitlementsAllowPost) :<|>
      (coerce -> entitlementsAllowUuidPost) :<|>
      (coerce -> entitlementsGet) :<|>
@@ -296,6 +299,7 @@ runPersonaServer Config{..} backend = do
        coerce accountPasswordResetPost :<|>
        coerce adminSearchPost :<|>
        coerce adminUserPost :<|>
+       coerce entitlementsAllowGet :<|>
        coerce entitlementsAllowPost :<|>
        coerce entitlementsAllowUuidPost :<|>
        coerce entitlementsGet :<|>
