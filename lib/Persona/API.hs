@@ -118,7 +118,8 @@ formatSeparatedQueryList char = T.intercalate (T.singleton char) . map toQueryPa
 
 -- | Servant type-level API, generated from the OpenAPI spec for Persona.
 type PersonaAPI
-    =    "account" :> "password" :> "forgot" :> ReqBody '[JSON] ForgotPasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordForgotPost' route
+    =    "account" :> "password" :> "forgot" :> QueryParam "email" Text :> QueryParam "redir" Bool :> Verb 'GET 200 '[JSON] [Value] -- 'accountPasswordForgotGet' route
+    :<|> "account" :> "password" :> "forgot" :> ReqBody '[JSON] ForgotPasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordForgotPost' route
     :<|> "account" :> "password" :> "reset" :> ReqBody '[JSON] UpdatePasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordResetPost' route
     :<|> "admin" :> "search" :> ReqBody '[JSON] SearchQuery :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [SearchResult] -- 'adminSearchPost' route
     :<|> "admin" :> "user" :> ReqBody '[JSON] AdminNewUser :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] LoginResponse -- 'adminUserPost' route
@@ -170,7 +171,8 @@ newtype PersonaClientError = PersonaClientError ClientError
 -- is a backend that executes actions by sending HTTP requests (see @createPersonaClient@). Alternatively, provided
 -- a backend, the API can be served using @runPersonaServer@.
 data PersonaBackend m = PersonaBackend
-  { accountPasswordForgotPost :: ForgotPasswordData -> m [Value]{- ^  -}
+  { accountPasswordForgotGet :: Maybe Text -> Maybe Bool -> m [Value]{- ^  -}
+  , accountPasswordForgotPost :: ForgotPasswordData -> m [Value]{- ^  -}
   , accountPasswordResetPost :: UpdatePasswordData -> m [Value]{- ^  -}
   , adminSearchPost :: SearchQuery -> Maybe UUID -> Maybe Text -> m [SearchResult]{- ^  -}
   , adminUserPost :: AdminNewUser -> Maybe UUID -> Maybe Text -> m LoginResponse{- ^  -}
@@ -226,7 +228,8 @@ instance MonadIO PersonaClient where
 createPersonaClient :: PersonaBackend PersonaClient
 createPersonaClient = PersonaBackend{..}
   where
-    ((coerce -> accountPasswordForgotPost) :<|>
+    ((coerce -> accountPasswordForgotGet) :<|>
+     (coerce -> accountPasswordForgotPost) :<|>
      (coerce -> accountPasswordResetPost) :<|>
      (coerce -> adminSearchPost) :<|>
      (coerce -> adminUserPost) :<|>
@@ -295,7 +298,8 @@ runPersonaServer Config{..} backend = do
   liftIO $ Warp.runSettings warpSettings $ serve (Proxy :: Proxy PersonaAPI) (serverFromBackend backend)
   where
     serverFromBackend PersonaBackend{..} =
-      (coerce accountPasswordForgotPost :<|>
+      (coerce accountPasswordForgotGet :<|>
+       coerce accountPasswordForgotPost :<|>
        coerce accountPasswordResetPost :<|>
        coerce adminSearchPost :<|>
        coerce adminUserPost :<|>

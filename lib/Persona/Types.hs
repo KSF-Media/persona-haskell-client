@@ -214,6 +214,7 @@ instance ToJSON FaroUser where
 -- | 
 data ForgotPasswordData = ForgotPasswordData
   { forgotPasswordDataEmail :: Text -- ^ 
+  , forgotPasswordDataRedir :: Maybe Bool -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON ForgotPasswordData where
