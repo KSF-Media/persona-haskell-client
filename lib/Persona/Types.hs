@@ -579,6 +579,8 @@ data PackageCampaign = PackageCampaign
   , packageCampaignPriceEur :: Double -- ^ Price of campaign in euros
   , packageCampaignLength :: Int -- ^ Length of campaign
   , packageCampaignLengthUnit :: Text -- ^ Unit of length (days, weeks, months, years)
+  , packageCampaignStartDay :: Maybe Day -- ^ 
+  , packageCampaignEndDay :: Maybe Day -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PackageCampaign where
@@ -631,6 +633,7 @@ instance ToJSON PastTemporaryAddress where
 data PausedSubscription = PausedSubscription
   { pausedSubscriptionStartDate :: Day -- ^ 
   , pausedSubscriptionEndDate :: Day -- ^ 
+  , pausedSubscriptionSleepType :: Text -- ^ Type of subscription pause
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PausedSubscription where
