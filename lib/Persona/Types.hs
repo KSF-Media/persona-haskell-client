@@ -47,6 +47,7 @@ module Persona.Types (
   PausedSubscription (..),
   Payment (..),
   PendingAddressChange (..),
+  PersistedEntitlementAccess (..),
   Product (..),
   SearchQuery (..),
   SearchResult (..),
@@ -188,6 +189,7 @@ instance ToJSON DeliveryReclamation where
 data EntitlementAccess = EntitlementAccess
   { entitlementAccessStartAt :: Text -- ^ 
   , entitlementAccessEndAt :: Text -- ^ 
+  , entitlementAccessOnlyToProducts :: Maybe [Text] -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON EntitlementAccess where
@@ -677,6 +679,20 @@ instance FromJSON PendingAddressChange where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "pendingAddressChange")
 instance ToJSON PendingAddressChange where
   toJSON = genericToJSON (removeFieldLabelPrefix False "pendingAddressChange")
+
+
+-- | 
+data PersistedEntitlementAccess = PersistedEntitlementAccess
+  { persistedEntitlementAccessId :: Maybe Integer -- ^ 
+  , persistedEntitlementAccessStartAt :: Text -- ^ 
+  , persistedEntitlementAccessEndAt :: Text -- ^ 
+  , persistedEntitlementAccessOnlyToProducts :: Maybe [Text] -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON PersistedEntitlementAccess where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "persistedEntitlementAccess")
+instance ToJSON PersistedEntitlementAccess where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "persistedEntitlementAccess")
 
 
 -- | 
