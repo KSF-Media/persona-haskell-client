@@ -176,7 +176,7 @@ data DeliveryReclamation = DeliveryReclamation
   , deliveryReclamationDate :: Day -- ^ 
   , deliveryReclamationPaper :: Maybe Text -- ^ 
   , deliveryReclamationPublicationDate :: Day -- ^ 
-  , deliveryReclamationClaim :: Text -- ^ The type of claim for the reclamation
+  , deliveryReclamationClaim :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON DeliveryReclamation where
@@ -497,7 +497,7 @@ instance ToJSON LoginResponse where
 data NewDeliveryReclamation = NewDeliveryReclamation
   { newDeliveryReclamationPaper :: Maybe Text -- ^ 
   , newDeliveryReclamationPublicationDate :: Day -- ^ 
-  , newDeliveryReclamationClaim :: Text -- ^ The type of claim for the reclamation
+  , newDeliveryReclamationClaim :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON NewDeliveryReclamation where
@@ -580,7 +580,7 @@ data PackageCampaign = PackageCampaign
   , packageCampaignName :: Text -- ^ Campaign name
   , packageCampaignPriceEur :: Double -- ^ Price of campaign in euros
   , packageCampaignLength :: Int -- ^ Length of campaign
-  , packageCampaignLengthUnit :: Text -- ^ Unit of length (days, weeks, months, years)
+  , packageCampaignLengthUnit :: Text -- ^ 
   , packageCampaignStartDay :: Maybe Day -- ^ 
   , packageCampaignEndDay :: Maybe Day -- ^ 
   } deriving (Show, Eq, Generic, Data)
@@ -635,7 +635,7 @@ instance ToJSON PastTemporaryAddress where
 data PausedSubscription = PausedSubscription
   { pausedSubscriptionStartDate :: Day -- ^ 
   , pausedSubscriptionEndDate :: Day -- ^ 
-  , pausedSubscriptionSleepType :: Text -- ^ Type of subscription pause
+  , pausedSubscriptionSleepType :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PausedSubscription where
@@ -672,7 +672,7 @@ data PendingAddressChange = PendingAddressChange
   { pendingAddressChangeAddress :: DeliveryAddress -- ^ 
   , pendingAddressChangeStartDate :: Day -- ^ 
   , pendingAddressChangeEndDate :: Maybe Day -- ^ 
-  , pendingAddressChangeType :: Text -- ^ Type of address change
+  , pendingAddressChangeType :: Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON PendingAddressChange where
@@ -753,7 +753,7 @@ data Subscription = Subscription
   , subscriptionDeliveryAddress :: Maybe DeliveryAddress -- ^ 
   , subscriptionPendingAddressChanges :: Maybe [PendingAddressChange] -- ^ Pending and ongoing temporary address changes
   , subscriptionOrderNumber :: Maybe Text -- ^ Order number of subscription
-  , subscriptionPaymentMethod :: Maybe Text -- ^ Payment method of subscription
+  , subscriptionPaymentMethod :: Maybe Text -- ^ 
   , subscriptionPaymentMethodId :: Maybe Int -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
