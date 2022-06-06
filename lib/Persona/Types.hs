@@ -132,7 +132,7 @@ instance ToJSON AdminNewUser where
 
 -- | Cancel reason
 data CancelSubscriptionReason = CancelSubscriptionReason
-  { cancelSubscriptionReasonReason :: Text -- ^ Cancel reason code
+  { cancelSubscriptionReasonReason :: Text -- ^ 
   , cancelSubscriptionReasonNotes :: Maybe Text -- ^ Cancel reason explanation
   } deriving (Show, Eq, Generic, Data)
 
@@ -741,9 +741,9 @@ data Subscription = Subscription
   , subscriptionExtno :: Int -- ^ Subscription Extension Id - how many times a subscription has been extended
   , subscriptionCusno :: Int -- ^ Customer getting the subscription
   , subscriptionPaycusno :: Int -- ^ Customer paying for the subscription
-  , subscriptionKind :: Text -- ^ Subscription kind - what kind of order is it
-  , subscriptionState :: Text -- ^ Current state of the Subscription
-  , subscriptionPricegroup :: Maybe Text -- ^ Pricegroup of the Subscription
+  , subscriptionKind :: Text -- ^ 
+  , subscriptionState :: Text -- ^ 
+  , subscriptionPricegroup :: Maybe Text -- ^ 
   , subscriptionPackage :: Package -- ^ 
   , subscriptionDates :: SubscriptionDates -- ^ 
   , subscriptionExtsubsexists :: Bool -- ^ If the extension of this subscription exists
