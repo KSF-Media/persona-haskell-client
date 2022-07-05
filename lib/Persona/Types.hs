@@ -755,6 +755,7 @@ data Subscription = Subscription
   , subscriptionOrderNumber :: Maybe Text -- ^ Order number of subscription
   , subscriptionPaymentMethod :: Maybe Text -- ^ 
   , subscriptionPaymentMethodId :: Maybe Int -- ^ 
+  , subscriptionDeliveryTroubleEnd :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON Subscription where
