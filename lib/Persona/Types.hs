@@ -177,6 +177,7 @@ data DeliveryReclamation = DeliveryReclamation
   , deliveryReclamationPaper :: Maybe Text -- ^ 
   , deliveryReclamationPublicationDate :: Day -- ^ 
   , deliveryReclamationClaim :: Text -- ^ 
+  , deliveryReclamationDoorCode :: Maybe Text -- ^ Door code for redelivery
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON DeliveryReclamation where
@@ -498,6 +499,7 @@ data NewDeliveryReclamation = NewDeliveryReclamation
   { newDeliveryReclamationPaper :: Maybe Text -- ^ 
   , newDeliveryReclamationPublicationDate :: Day -- ^ 
   , newDeliveryReclamationClaim :: Text -- ^ 
+  , newDeliveryReclamationDoorCode :: Maybe Text -- ^ Door code for possible redelivery
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON NewDeliveryReclamation where
