@@ -38,7 +38,8 @@ module Persona.Types (
   NewDeliveryReclamation (..),
   NewTemporaryUser (..),
   NewUser (..),
-  NewsletterSubscriptions (..),
+  Newsletter (..),
+  NewsletterSubscription (..),
   Package (..),
   PackageCampaign (..),
   PackageOffer (..),
@@ -542,16 +543,29 @@ instance ToJSON NewUser where
 
 
 -- | 
-data NewsletterSubscriptions = NewsletterSubscriptions
-  { newsletterSubscriptionsNorden :: Maybe Bool -- ^ 
-  , newsletterSubscriptionsDaily :: Maybe Bool -- ^ 
-  , newsletterSubscriptionsKultur :: Maybe Bool -- ^ 
+data Newsletter = Newsletter
+  { newsletterListId :: Text -- ^ 
+  , newsletterPaper :: Text -- ^ 
+  , newsletterSubscriptions :: (Map.Map String [NewsletterSubscription]) -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
-instance FromJSON NewsletterSubscriptions where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "newsletterSubscriptions")
-instance ToJSON NewsletterSubscriptions where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "newsletterSubscriptions")
+instance FromJSON Newsletter where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "newsletter")
+instance ToJSON Newsletter where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "newsletter")
+
+
+-- | 
+data NewsletterSubscription = NewsletterSubscription
+  { newsletterSubscriptionListName :: Text -- ^ 
+  , newsletterSubscriptionId :: Text -- ^ 
+  , newsletterSubscriptionSubscribed :: Bool -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON NewsletterSubscription where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "newsletterSubscription")
+instance ToJSON NewsletterSubscription where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "newsletterSubscription")
 
 
 -- | 
