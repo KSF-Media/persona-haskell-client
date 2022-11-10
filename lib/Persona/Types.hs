@@ -192,6 +192,7 @@ data EntitlementAccess = EntitlementAccess
   { entitlementAccessStartAt :: Text -- ^ 
   , entitlementAccessEndAt :: Text -- ^ 
   , entitlementAccessOnlyToProducts :: Maybe [Text] -- ^ 
+  , entitlementAccessByPackageId :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON EntitlementAccess where
