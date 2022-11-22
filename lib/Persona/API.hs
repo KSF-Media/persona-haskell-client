@@ -128,6 +128,7 @@ type PersonaAPI
     :<|> "entitlements" :> "allow" :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowPost' route
     :<|> "entitlements" :> "allow" :> Capture "uuid" UUID :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowUuidPost' route
     :<|> "entitlements" :> Verb 'GET 200 '[JSON] ((Map.Map String [Text])) -- 'entitlementsGet' route
+    :<|> "entitlements" :> "global" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [PersistedEntitlementAccess] -- 'entitlementsGlobalGet' route
     :<|> "login" :> "ip" :> QueryParam "paper" Text :> Header "X-Real-IP" Text :> Verb 'GET 200 '[JSON] LoginResponse -- 'loginIpGet' route
     :<|> "login" :> ReqBody '[JSON] LoginData :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginPost' route
     :<|> "login" :> "some" :> ReqBody '[JSON] LoginDataSoMe :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSomePost' route
@@ -183,6 +184,7 @@ data PersonaBackend m = PersonaBackend
   , entitlementsAllowPost :: EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsAllowUuidPost :: UUID -> EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsGet :: m ((Map.Map String [Text])){- ^  -}
+  , entitlementsGlobalGet :: Maybe UUID -> Maybe Text -> m [PersistedEntitlementAccess]{- ^  -}
   , loginIpGet :: Maybe Text -> Maybe Text -> m LoginResponse{- ^ Returns auth & token for customers with IP based entitlement -}
   , loginPost :: LoginData -> m LoginResponse{- ^  -}
   , loginSomePost :: LoginDataSoMe -> m LoginResponse{- ^  -}
@@ -242,6 +244,7 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> entitlementsAllowPost) :<|>
      (coerce -> entitlementsAllowUuidPost) :<|>
      (coerce -> entitlementsGet) :<|>
+     (coerce -> entitlementsGlobalGet) :<|>
      (coerce -> loginIpGet) :<|>
      (coerce -> loginPost) :<|>
      (coerce -> loginSomePost) :<|>
@@ -314,6 +317,7 @@ runPersonaServer Config{..} backend = do
        coerce entitlementsAllowPost :<|>
        coerce entitlementsAllowUuidPost :<|>
        coerce entitlementsGet :<|>
+       coerce entitlementsGlobalGet :<|>
        coerce loginIpGet :<|>
        coerce loginPost :<|>
        coerce loginSomePost :<|>
