@@ -122,7 +122,7 @@ type PersonaAPI
     :<|> "account" :> "password" :> "forgot" :> ReqBody '[JSON] ForgotPasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordForgotPost' route
     :<|> "account" :> "password" :> "reset" :> ReqBody '[JSON] UpdatePasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordResetPost' route
     :<|> "admin" :> "search" :> ReqBody '[JSON] SearchQuery :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [SearchResult] -- 'adminSearchPost' route
-    :<|> "admin" :> "transfer-passive-subscribers" :> Capture "listid" Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] () -- 'adminTransferPassiveSubscribersListidPost' route
+    :<|> "admin" :> "transfer-passive-subscribers" :> Capture "listid" Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Value -- 'adminTransferPassiveSubscribersListidPost' route
     :<|> "admin" :> "user" :> ReqBody '[JSON] AdminNewUser :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] LoginResponse -- 'adminUserPost' route
     :<|> "entitlements" :> "allow" :> ReqBody '[JSON] Integer :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] [Value] -- 'entitlementsAllowDelete' route
     :<|> "entitlements" :> "allow" :> QueryParam "ip" Text :> QueryParam "paper" Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [PersistedEntitlementAccess] -- 'entitlementsAllowGet' route
@@ -179,7 +179,7 @@ data PersonaBackend m = PersonaBackend
   , accountPasswordForgotPost :: ForgotPasswordData -> m [Value]{- ^  -}
   , accountPasswordResetPost :: UpdatePasswordData -> m [Value]{- ^  -}
   , adminSearchPost :: SearchQuery -> Maybe UUID -> Maybe Text -> m [SearchResult]{- ^  -}
-  , adminTransferPassiveSubscribersListidPost :: Text -> Maybe UUID -> Maybe Text -> m (){- ^ Passive subscribers/members/customers are users who don't have active entitlements and haven't opted out from email marketing. For the given list (audience) ID, this endpoint transfers the list of passive subscribers from Kayak to Mailchimp (via Faro). -}
+  , adminTransferPassiveSubscribersListidPost :: Text -> Maybe UUID -> Maybe Text -> m Value{- ^ Passive subscribers/members/customers are users who don't have active entitlements and haven't opted out from email marketing. For the given list (audience) ID, this endpoint transfers the list of passive subscribers from Kayak to Mailchimp (via Faro). -}
   , adminUserPost :: AdminNewUser -> Maybe UUID -> Maybe Text -> m LoginResponse{- ^  -}
   , entitlementsAllowDelete :: Integer -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsAllowGet :: Maybe Text -> Maybe Text -> Maybe UUID -> Maybe Text -> m [PersistedEntitlementAccess]{- ^  -}
