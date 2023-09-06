@@ -783,8 +783,8 @@ instance ToJSON Subscription where
 
 -- | 
 data SubscriptionDates = SubscriptionDates
-  { subscriptionDatesLenMonths :: Maybe Int -- ^ Length of Subscription in months
-  , subscriptionDatesLenDays :: Maybe Int -- ^ Additional days (on top of months) for Subscription duration
+  { subscriptionDatesLenDays :: Maybe Int -- ^ Additional days (on top of months) for Subscription duration
+  , subscriptionDatesLenMonths :: Maybe Int -- ^ Length of Subscription in months
   , subscriptionDatesStart :: Day -- ^ 
   , subscriptionDatesEnd :: Maybe Day -- ^ 
   , subscriptionDatesUnpaidBreak :: Maybe Day -- ^ 
