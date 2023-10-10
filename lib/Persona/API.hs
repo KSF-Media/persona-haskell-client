@@ -130,6 +130,9 @@ type PersonaAPI
     :<|> "entitlements" :> "allow" :> Capture "uuid" UUID :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowUuidPost' route
     :<|> "entitlements" :> Verb 'GET 200 '[JSON] ((Map.Map String [Text])) -- 'entitlementsGet' route
     :<|> "entitlements" :> "global" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [PersistedEntitlementAccess] -- 'entitlementsGlobalGet' route
+    :<|> "identification" :> "login" :> Verb 'GET 200 '[JSON] () -- 'identificationLoginGet' route
+    :<|> "identification" :> "login" :> "return" :> QueryParam "code" Text :> QueryParam "state" Text :> Header "cookie" FilePath :> Header "cookie" FilePath :> Verb 'GET 200 '[JSON] Text -- 'identificationLoginReturnGet' route
+    :<|> "identification" :> "user" :> "stamp" :> Capture "uuid" UUID :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Text -- 'identificationUserStampUuidPost' route
     :<|> "login" :> "ip" :> QueryParam "paper" Text :> Header "X-Real-IP" Text :> Verb 'GET 200 '[JSON] LoginResponse -- 'loginIpGet' route
     :<|> "login" :> ReqBody '[JSON] LoginData :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginPost' route
     :<|> "login" :> "some" :> ReqBody '[JSON] LoginDataSoMe :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSomePost' route
@@ -187,6 +190,9 @@ data PersonaBackend m = PersonaBackend
   , entitlementsAllowUuidPost :: UUID -> EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsGet :: m ((Map.Map String [Text])){- ^  -}
   , entitlementsGlobalGet :: Maybe UUID -> Maybe Text -> m [PersistedEntitlementAccess]{- ^  -}
+  , identificationLoginGet :: m (){- ^  -}
+  , identificationLoginReturnGet :: Maybe Text -> Maybe Text -> Maybe FilePath -> Maybe FilePath -> m Text{- ^  -}
+  , identificationUserStampUuidPost :: UUID -> Maybe UUID -> Maybe Text -> m Text{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , loginIpGet :: Maybe Text -> Maybe Text -> m LoginResponse{- ^ Returns auth & token for customers with IP based entitlement -}
   , loginPost :: LoginData -> m LoginResponse{- ^  -}
   , loginSomePost :: LoginDataSoMe -> m LoginResponse{- ^  -}
@@ -248,6 +254,9 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> entitlementsAllowUuidPost) :<|>
      (coerce -> entitlementsGet) :<|>
      (coerce -> entitlementsGlobalGet) :<|>
+     (coerce -> identificationLoginGet) :<|>
+     (coerce -> identificationLoginReturnGet) :<|>
+     (coerce -> identificationUserStampUuidPost) :<|>
      (coerce -> loginIpGet) :<|>
      (coerce -> loginPost) :<|>
      (coerce -> loginSomePost) :<|>
@@ -322,6 +331,9 @@ runPersonaServer Config{..} backend = do
        coerce entitlementsAllowUuidPost :<|>
        coerce entitlementsGet :<|>
        coerce entitlementsGlobalGet :<|>
+       coerce identificationLoginGet :<|>
+       coerce identificationLoginReturnGet :<|>
+       coerce identificationUserStampUuidPost :<|>
        coerce loginIpGet :<|>
        coerce loginPost :<|>
        coerce loginSomePost :<|>
