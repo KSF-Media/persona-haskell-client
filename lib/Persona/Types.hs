@@ -14,6 +14,8 @@ module Persona.Types (
   EntitlementAccess (..),
   FaroUser (..),
   ForgotPasswordData (..),
+  FreePass (..),
+  FreePassInput (..),
   GdprConsent (..),
   InlineResponse400 (..),
   InlineResponse400InvalidRequestBody (..),
@@ -226,6 +228,32 @@ instance FromJSON ForgotPasswordData where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "forgotPasswordData")
 instance ToJSON ForgotPasswordData where
   toJSON = genericToJSON (removeFieldLabelPrefix False "forgotPasswordData")
+
+
+-- | 
+data FreePass = FreePass
+  { freePassHash :: Text -- ^ 
+  , freePassArticleId :: UUID -- ^ 
+  , freePassExpiryTime :: Text -- ^ 
+  , freePassRevoked :: Bool -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON FreePass where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "freePass")
+instance ToJSON FreePass where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "freePass")
+
+
+-- | 
+data FreePassInput = FreePassInput
+  { freePassInputArticleId :: UUID -- ^ 
+  , freePassInputExpiryTime :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON FreePassInput where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "freePassInput")
+instance ToJSON FreePassInput where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "freePassInput")
 
 
 -- | 
