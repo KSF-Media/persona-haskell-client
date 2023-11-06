@@ -121,6 +121,9 @@ type PersonaAPI
     =    "account" :> "password" :> "forgot" :> QueryParam "email" Text :> QueryParam "redir" Bool :> Verb 'GET 200 '[JSON] [Value] -- 'accountPasswordForgotGet' route
     :<|> "account" :> "password" :> "forgot" :> ReqBody '[JSON] ForgotPasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordForgotPost' route
     :<|> "account" :> "password" :> "reset" :> ReqBody '[JSON] UpdatePasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordResetPost' route
+    :<|> "admin" :> "free-pass" :> ReqBody '[JSON] Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] () -- 'adminFreePassDelete' route
+    :<|> "admin" :> "free-pass" :> ReqBody '[JSON] FreePassInput :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Text -- 'adminFreePassPost' route
+    :<|> "admin" :> "free-passes" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [FreePass] -- 'adminFreePassesGet' route
     :<|> "admin" :> "search" :> ReqBody '[JSON] SearchQuery :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [SearchResult] -- 'adminSearchPost' route
     :<|> "admin" :> "transfer-passive-subscribers" :> Capture "listid" Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Value -- 'adminTransferPassiveSubscribersListidPost' route
     :<|> "admin" :> "user" :> ReqBody '[JSON] AdminNewUser :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] LoginResponse -- 'adminUserPost' route
@@ -128,6 +131,7 @@ type PersonaAPI
     :<|> "entitlements" :> "allow" :> QueryParam "ip" Text :> QueryParam "paper" Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [PersistedEntitlementAccess] -- 'entitlementsAllowGet' route
     :<|> "entitlements" :> "allow" :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowPost' route
     :<|> "entitlements" :> "allow" :> Capture "uuid" UUID :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowUuidPost' route
+    :<|> "entitlements" :> "free-pass" :> QueryParam "freePassHash" Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] Bool -- 'entitlementsFreePassGet' route
     :<|> "entitlements" :> Verb 'GET 200 '[JSON] ((Map.Map String [Text])) -- 'entitlementsGet' route
     :<|> "entitlements" :> "global" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [PersistedEntitlementAccess] -- 'entitlementsGlobalGet' route
     :<|> "identification" :> "login" :> Verb 'GET 200 '[JSON] () -- 'identificationLoginGet' route
@@ -182,6 +186,9 @@ data PersonaBackend m = PersonaBackend
   { accountPasswordForgotGet :: Maybe Text -> Maybe Bool -> m [Value]{- ^  -}
   , accountPasswordForgotPost :: ForgotPasswordData -> m [Value]{- ^  -}
   , accountPasswordResetPost :: UpdatePasswordData -> m [Value]{- ^  -}
+  , adminFreePassDelete :: Text -> Maybe UUID -> Maybe Text -> m (){- ^ Marks a free pass as being revoked so that it can't be used anymore. Currently, revoked free passes can't be reinstated through Persona API (though it's possible to do so with an SQL query). -}
+  , adminFreePassPost :: FreePassInput -> Maybe UUID -> Maybe Text -> m Text{- ^ Free passes can be used to temporarily bypass the paywall for individual articles. -}
+  , adminFreePassesGet :: Maybe UUID -> Maybe Text -> m [FreePass]{- ^ This end point returns the list of all free passes, including those that have been expired or revoked. -}
   , adminSearchPost :: SearchQuery -> Maybe UUID -> Maybe Text -> m [SearchResult]{- ^  -}
   , adminTransferPassiveSubscribersListidPost :: Text -> Maybe UUID -> Maybe Text -> m Value{- ^ Passive subscribers/members/customers are users who don't have active entitlements and haven't opted out from email marketing. For the given list (audience) ID, this endpoint transfers the list of passive subscribers from Kayak to Mailchimp (via Faro). -}
   , adminUserPost :: AdminNewUser -> Maybe UUID -> Maybe Text -> m LoginResponse{- ^  -}
@@ -189,6 +196,7 @@ data PersonaBackend m = PersonaBackend
   , entitlementsAllowGet :: Maybe Text -> Maybe Text -> Maybe UUID -> Maybe Text -> m [PersistedEntitlementAccess]{- ^  -}
   , entitlementsAllowPost :: EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsAllowUuidPost :: UUID -> EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
+  , entitlementsFreePassGet :: Maybe Text -> Maybe UUID -> Maybe Text -> m Bool{- ^  -}
   , entitlementsGet :: m ((Map.Map String [Text])){- ^  -}
   , entitlementsGlobalGet :: Maybe UUID -> Maybe Text -> m [PersistedEntitlementAccess]{- ^  -}
   , identificationLoginGet :: m (){- ^  -}
@@ -247,6 +255,9 @@ createPersonaClient = PersonaBackend{..}
     ((coerce -> accountPasswordForgotGet) :<|>
      (coerce -> accountPasswordForgotPost) :<|>
      (coerce -> accountPasswordResetPost) :<|>
+     (coerce -> adminFreePassDelete) :<|>
+     (coerce -> adminFreePassPost) :<|>
+     (coerce -> adminFreePassesGet) :<|>
      (coerce -> adminSearchPost) :<|>
      (coerce -> adminTransferPassiveSubscribersListidPost) :<|>
      (coerce -> adminUserPost) :<|>
@@ -254,6 +265,7 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> entitlementsAllowGet) :<|>
      (coerce -> entitlementsAllowPost) :<|>
      (coerce -> entitlementsAllowUuidPost) :<|>
+     (coerce -> entitlementsFreePassGet) :<|>
      (coerce -> entitlementsGet) :<|>
      (coerce -> entitlementsGlobalGet) :<|>
      (coerce -> identificationLoginGet) :<|>
@@ -325,6 +337,9 @@ runPersonaServer Config{..} backend = do
       (coerce accountPasswordForgotGet :<|>
        coerce accountPasswordForgotPost :<|>
        coerce accountPasswordResetPost :<|>
+       coerce adminFreePassDelete :<|>
+       coerce adminFreePassPost :<|>
+       coerce adminFreePassesGet :<|>
        coerce adminSearchPost :<|>
        coerce adminTransferPassiveSubscribersListidPost :<|>
        coerce adminUserPost :<|>
@@ -332,6 +347,7 @@ runPersonaServer Config{..} backend = do
        coerce entitlementsAllowGet :<|>
        coerce entitlementsAllowPost :<|>
        coerce entitlementsAllowUuidPost :<|>
+       coerce entitlementsFreePassGet :<|>
        coerce entitlementsGet :<|>
        coerce entitlementsGlobalGet :<|>
        coerce identificationLoginGet :<|>
