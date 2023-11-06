@@ -134,7 +134,7 @@ type PersonaAPI
     :<|> "entitlements" :> "free-pass" :> QueryParam "freePassHash" Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] Bool -- 'entitlementsFreePassGet' route
     :<|> "entitlements" :> Verb 'GET 200 '[JSON] ((Map.Map String [Text])) -- 'entitlementsGet' route
     :<|> "entitlements" :> "global" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [PersistedEntitlementAccess] -- 'entitlementsGlobalGet' route
-    :<|> "identification" :> "login" :> Verb 'GET 200 '[JSON] () -- 'identificationLoginGet' route
+    :<|> "identification" :> "login" :> QueryParam "monitor" Text :> Verb 'GET 200 '[JSON] () -- 'identificationLoginGet' route
     :<|> "identification" :> "login" :> "monitor" :> Verb 'GET 200 '[JSON] () -- 'identificationLoginMonitorGet' route
     :<|> "identification" :> "login" :> "return" :> QueryParam "code" Text :> QueryParam "state" Text :> Header "cookie" FilePath :> Header "cookie" FilePath :> Verb 'GET 200 '[JSON] Text -- 'identificationLoginReturnGet' route
     :<|> "identification" :> "user" :> "stamp" :> Capture "uuid" UUID :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Text -- 'identificationUserStampUuidPost' route
@@ -199,7 +199,7 @@ data PersonaBackend m = PersonaBackend
   , entitlementsFreePassGet :: Maybe Text -> Maybe UUID -> Maybe Text -> m Bool{- ^  -}
   , entitlementsGet :: m ((Map.Map String [Text])){- ^  -}
   , entitlementsGlobalGet :: Maybe UUID -> Maybe Text -> m [PersistedEntitlementAccess]{- ^  -}
-  , identificationLoginGet :: m (){- ^  -}
+  , identificationLoginGet :: Maybe Text -> m (){- ^  -}
   , identificationLoginMonitorGet :: m (){- ^  -}
   , identificationLoginReturnGet :: Maybe Text -> Maybe Text -> Maybe FilePath -> Maybe FilePath -> m Text{- ^  -}
   , identificationUserStampUuidPost :: UUID -> Maybe UUID -> Maybe Text -> m Text{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
