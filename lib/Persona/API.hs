@@ -122,7 +122,7 @@ type PersonaAPI
     :<|> "account" :> "password" :> "forgot" :> ReqBody '[JSON] ForgotPasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordForgotPost' route
     :<|> "account" :> "password" :> "reset" :> ReqBody '[JSON] UpdatePasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordResetPost' route
     :<|> "admin" :> "free-pass" :> ReqBody '[JSON] Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] () -- 'adminFreePassDelete' route
-    :<|> "admin" :> "free-pass" :> ReqBody '[JSON] FreePassInput :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Text -- 'adminFreePassPost' route
+    :<|> "admin" :> "free-pass" :> ReqBody '[JSON] FreePassInput :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] Text -- 'adminFreePassPut' route
     :<|> "admin" :> "free-passes" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [FreePass] -- 'adminFreePassesGet' route
     :<|> "admin" :> "search" :> ReqBody '[JSON] SearchQuery :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [SearchResult] -- 'adminSearchPost' route
     :<|> "admin" :> "transfer-passive-subscribers" :> Capture "listid" Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Value -- 'adminTransferPassiveSubscribersListidPost' route
@@ -187,7 +187,7 @@ data PersonaBackend m = PersonaBackend
   , accountPasswordForgotPost :: ForgotPasswordData -> m [Value]{- ^  -}
   , accountPasswordResetPost :: UpdatePasswordData -> m [Value]{- ^  -}
   , adminFreePassDelete :: Text -> Maybe UUID -> Maybe Text -> m (){- ^ Marks a free pass as being revoked so that it can't be used anymore. Currently, revoked free passes can't be reinstated through Persona API (though it's possible to do so with an SQL query). -}
-  , adminFreePassPost :: FreePassInput -> Maybe UUID -> Maybe Text -> m Text{- ^ Free passes can be used to temporarily bypass the paywall for individual articles. -}
+  , adminFreePassPut :: FreePassInput -> Maybe UUID -> Maybe Text -> m Text{- ^ Free passes can be used to temporarily bypass the paywall for individual articles. -}
   , adminFreePassesGet :: Maybe UUID -> Maybe Text -> m [FreePass]{- ^ This end point returns the list of all free passes, including those that have been expired or revoked. -}
   , adminSearchPost :: SearchQuery -> Maybe UUID -> Maybe Text -> m [SearchResult]{- ^  -}
   , adminTransferPassiveSubscribersListidPost :: Text -> Maybe UUID -> Maybe Text -> m Value{- ^ Passive subscribers/members/customers are users who don't have active entitlements and haven't opted out from email marketing. For the given list (audience) ID, this endpoint transfers the list of passive subscribers from Kayak to Mailchimp (via Faro). -}
@@ -256,7 +256,7 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> accountPasswordForgotPost) :<|>
      (coerce -> accountPasswordResetPost) :<|>
      (coerce -> adminFreePassDelete) :<|>
-     (coerce -> adminFreePassPost) :<|>
+     (coerce -> adminFreePassPut) :<|>
      (coerce -> adminFreePassesGet) :<|>
      (coerce -> adminSearchPost) :<|>
      (coerce -> adminTransferPassiveSubscribersListidPost) :<|>
@@ -338,7 +338,7 @@ runPersonaServer Config{..} backend = do
        coerce accountPasswordForgotPost :<|>
        coerce accountPasswordResetPost :<|>
        coerce adminFreePassDelete :<|>
-       coerce adminFreePassPost :<|>
+       coerce adminFreePassPut :<|>
        coerce adminFreePassesGet :<|>
        coerce adminSearchPost :<|>
        coerce adminTransferPassiveSubscribersListidPost :<|>
