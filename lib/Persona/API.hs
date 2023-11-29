@@ -118,10 +118,7 @@ formatSeparatedQueryList char = T.intercalate (T.singleton char) . map toQueryPa
 
 -- | Servant type-level API, generated from the OpenAPI spec for Persona.
 type PersonaAPI
-    =    "account" :> "password" :> "forgot" :> QueryParam "email" Text :> QueryParam "redir" Bool :> Verb 'GET 200 '[JSON] [Value] -- 'accountPasswordForgotGet' route
-    :<|> "account" :> "password" :> "forgot" :> ReqBody '[JSON] ForgotPasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordForgotPost' route
-    :<|> "account" :> "password" :> "reset" :> ReqBody '[JSON] UpdatePasswordData :> Verb 'POST 200 '[JSON] [Value] -- 'accountPasswordResetPost' route
-    :<|> "admin" :> "free-pass" :> ReqBody '[JSON] Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] () -- 'adminFreePassDelete' route
+    =    "admin" :> "free-pass" :> ReqBody '[JSON] Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] () -- 'adminFreePassDelete' route
     :<|> "admin" :> "free-pass" :> ReqBody '[JSON] FreePassInput :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] Text -- 'adminFreePassPut' route
     :<|> "admin" :> "free-passes" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [FreePass] -- 'adminFreePassesGet' route
     :<|> "admin" :> "search" :> ReqBody '[JSON] SearchQuery :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [SearchResult] -- 'adminSearchPost' route
@@ -140,7 +137,6 @@ type PersonaAPI
     :<|> "identification" :> "user" :> "stamp" :> Capture "uuid" UUID :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Text -- 'identificationUserStampUuidPost' route
     :<|> "login" :> "ip" :> QueryParam "paper" Text :> Header "X-Real-IP" Text :> Verb 'GET 200 '[JSON] LoginResponse -- 'loginIpGet' route
     :<|> "login" :> ReqBody '[JSON] LoginData :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginPost' route
-    :<|> "login" :> "some" :> ReqBody '[JSON] LoginDataSoMe :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSomePost' route
     :<|> "login" :> "sso" :> ReqBody '[JSON] LoginDataSSO :> Verb 'POST 200 '[JSON] LoginResponse -- 'loginSsoPost' route
     :<|> "login" :> Capture "uuid" UUID :> QueryParam "everywhere" Bool :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] [Value] -- 'loginUuidDelete' route
     :<|> "users" :> ReqBody '[JSON] NewUser :> Verb 'POST 200 '[JSON] LoginResponse -- 'usersPost' route
@@ -183,10 +179,7 @@ newtype PersonaClientError = PersonaClientError ClientError
 -- is a backend that executes actions by sending HTTP requests (see @createPersonaClient@). Alternatively, provided
 -- a backend, the API can be served using @runPersonaServer@.
 data PersonaBackend m = PersonaBackend
-  { accountPasswordForgotGet :: Maybe Text -> Maybe Bool -> m [Value]{- ^  -}
-  , accountPasswordForgotPost :: ForgotPasswordData -> m [Value]{- ^  -}
-  , accountPasswordResetPost :: UpdatePasswordData -> m [Value]{- ^  -}
-  , adminFreePassDelete :: Text -> Maybe UUID -> Maybe Text -> m (){- ^ Marks a free pass as being revoked so that it can't be used anymore. Currently, revoked free passes can't be reinstated through Persona API (though it's possible to do so with an SQL query). -}
+  { adminFreePassDelete :: Text -> Maybe UUID -> Maybe Text -> m (){- ^ Marks a free pass as being revoked so that it can't be used anymore. Currently, revoked free passes can't be reinstated through Persona API (though it's possible to do so with an SQL query). -}
   , adminFreePassPut :: FreePassInput -> Maybe UUID -> Maybe Text -> m Text{- ^ Free passes can be used to temporarily bypass the paywall for individual articles. -}
   , adminFreePassesGet :: Maybe UUID -> Maybe Text -> m [FreePass]{- ^ This end point returns the list of all free passes, including those that have been expired or revoked. -}
   , adminSearchPost :: SearchQuery -> Maybe UUID -> Maybe Text -> m [SearchResult]{- ^  -}
@@ -205,7 +198,6 @@ data PersonaBackend m = PersonaBackend
   , identificationUserStampUuidPost :: UUID -> Maybe UUID -> Maybe Text -> m Text{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , loginIpGet :: Maybe Text -> Maybe Text -> m LoginResponse{- ^ Returns auth & token for customers with IP based entitlement -}
   , loginPost :: LoginData -> m LoginResponse{- ^  -}
-  , loginSomePost :: LoginDataSoMe -> m LoginResponse{- ^  -}
   , loginSsoPost :: LoginDataSSO -> m LoginResponse{- ^  -}
   , loginUuidDelete :: UUID -> Maybe Bool -> Maybe Text -> m [Value]{- ^ Authorization header expects the following format ‘OAuth {token}’ -}
   , usersPost :: NewUser -> m LoginResponse{- ^  -}
@@ -252,10 +244,7 @@ instance MonadIO PersonaClient where
 createPersonaClient :: PersonaBackend PersonaClient
 createPersonaClient = PersonaBackend{..}
   where
-    ((coerce -> accountPasswordForgotGet) :<|>
-     (coerce -> accountPasswordForgotPost) :<|>
-     (coerce -> accountPasswordResetPost) :<|>
-     (coerce -> adminFreePassDelete) :<|>
+    ((coerce -> adminFreePassDelete) :<|>
      (coerce -> adminFreePassPut) :<|>
      (coerce -> adminFreePassesGet) :<|>
      (coerce -> adminSearchPost) :<|>
@@ -274,7 +263,6 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> identificationUserStampUuidPost) :<|>
      (coerce -> loginIpGet) :<|>
      (coerce -> loginPost) :<|>
-     (coerce -> loginSomePost) :<|>
      (coerce -> loginSsoPost) :<|>
      (coerce -> loginUuidDelete) :<|>
      (coerce -> usersPost) :<|>
@@ -334,10 +322,7 @@ runPersonaServer Config{..} backend = do
   liftIO $ Warp.runSettings warpSettings $ serve (Proxy :: Proxy PersonaAPI) (serverFromBackend backend)
   where
     serverFromBackend PersonaBackend{..} =
-      (coerce accountPasswordForgotGet :<|>
-       coerce accountPasswordForgotPost :<|>
-       coerce accountPasswordResetPost :<|>
-       coerce adminFreePassDelete :<|>
+      (coerce adminFreePassDelete :<|>
        coerce adminFreePassPut :<|>
        coerce adminFreePassesGet :<|>
        coerce adminSearchPost :<|>
@@ -356,7 +341,6 @@ runPersonaServer Config{..} backend = do
        coerce identificationUserStampUuidPost :<|>
        coerce loginIpGet :<|>
        coerce loginPost :<|>
-       coerce loginSomePost :<|>
        coerce loginSsoPost :<|>
        coerce loginUuidDelete :<|>
        coerce usersPost :<|>

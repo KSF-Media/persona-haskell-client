@@ -13,7 +13,6 @@ module Persona.Types (
   DeliveryReclamation (..),
   EntitlementAccess (..),
   FaroUser (..),
-  ForgotPasswordData (..),
   FreePass (..),
   FreePassInput (..),
   GdprConsent (..),
@@ -22,10 +21,6 @@ module Persona.Types (
   InlineResponse403 (..),
   InlineResponse4031 (..),
   InlineResponse4031AccessTokenExpired (..),
-  InlineResponse4032 (..),
-  InlineResponse4032EmailAddressInUse (..),
-  InlineResponse4032EmailNotAuthorized (..),
-  InlineResponse4032OauthFailed (..),
   InlineResponse403InvalidCredentials (..),
   InlineResponse415 (..),
   InlineResponse415UnsupportedMediaType (..),
@@ -35,7 +30,6 @@ module Persona.Types (
   LegalConsent (..),
   LoginData (..),
   LoginDataSSO (..),
-  LoginDataSoMe (..),
   LoginResponse (..),
   NewDeliveryReclamation (..),
   NewTemporaryUser (..),
@@ -61,7 +55,6 @@ module Persona.Types (
   SubscriptionPayments (..),
   TemporaryAddressChange (..),
   TemporaryAddressChangeDates (..),
-  UpdatePasswordData (..),
   User (..),
   UserUpdate (..),
   UserUpdateAddress (..),
@@ -219,18 +212,6 @@ instance ToJSON FaroUser where
 
 
 -- | 
-data ForgotPasswordData = ForgotPasswordData
-  { forgotPasswordDataEmail :: Text -- ^ 
-  , forgotPasswordDataRedir :: Maybe Bool -- ^ 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON ForgotPasswordData where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "forgotPasswordData")
-instance ToJSON ForgotPasswordData where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "forgotPasswordData")
-
-
--- | 
 data FreePass = FreePass
   { freePassHash :: Text -- ^ 
   , freePassArticleId :: UUID -- ^ 
@@ -332,56 +313,6 @@ instance ToJSON InlineResponse4031AccessTokenExpired where
 
 
 -- | 
-data InlineResponse4032 = InlineResponse4032
-  { inlineResponse4032EmailUnderscoreaddressUnderscoreinUnderscoreuse :: Maybe InlineResponse4032EmailAddressInUse -- ^ 
-  , inlineResponse4032HttpUnderscorecode :: Maybe Int -- ^ 
-  , inlineResponse4032OauthUnderscorefailed :: Maybe InlineResponse4032OauthFailed -- ^ 
-  , inlineResponse4032HttpUnderscorestatus :: Maybe Text -- ^ 
-  , inlineResponse4032EmailUnderscorenotUnderscoreauthorized :: Maybe InlineResponse4032EmailNotAuthorized -- ^ 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON InlineResponse4032 where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4032")
-instance ToJSON InlineResponse4032 where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4032")
-
-
--- | 
-data InlineResponse4032EmailAddressInUse = InlineResponse4032EmailAddressInUse
-  { inlineResponse4032EmailAddressInUseMergeUnderscoretoken :: Maybe Text -- ^ 
-  , inlineResponse4032EmailAddressInUseDescription :: Maybe Text -- ^ 
-  , inlineResponse4032EmailAddressInUseExistingUnderscoreprovider :: Maybe Text -- ^ 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON InlineResponse4032EmailAddressInUse where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4032EmailAddressInUse")
-instance ToJSON InlineResponse4032EmailAddressInUse where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4032EmailAddressInUse")
-
-
--- | 
-data InlineResponse4032EmailNotAuthorized = InlineResponse4032EmailNotAuthorized
-  { inlineResponse4032EmailNotAuthorizedDescription :: Maybe Text -- ^ 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON InlineResponse4032EmailNotAuthorized where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4032EmailNotAuthorized")
-instance ToJSON InlineResponse4032EmailNotAuthorized where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4032EmailNotAuthorized")
-
-
--- | 
-data InlineResponse4032OauthFailed = InlineResponse4032OauthFailed
-  { inlineResponse4032OauthFailedDescription :: Maybe Text -- ^ 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON InlineResponse4032OauthFailed where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "inlineResponse4032OauthFailed")
-instance ToJSON InlineResponse4032OauthFailed where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "inlineResponse4032OauthFailed")
-
-
--- | 
 data InlineResponse403InvalidCredentials = InlineResponse403InvalidCredentials
   { inlineResponse403InvalidCredentialsDescription :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
@@ -446,9 +377,6 @@ data JanrainUser = JanrainUser
   , janrainUserEmail :: Maybe Text -- ^ 
   , janrainUserFirstName :: Maybe Text -- ^ 
   , janrainUserLastName :: Maybe Text -- ^ 
-  , janrainUserMiddleName :: Maybe Text -- ^ 
-  , janrainUserConsent :: [GdprConsent] -- ^ 
-  , janrainUserLegal :: [LegalConsent] -- ^ 
   , janrainUserCusno :: Maybe Text -- ^ 
   , janrainUserOtherCusnos :: Maybe [Text] -- ^ 
   } deriving (Show, Eq, Generic, Data)
@@ -476,7 +404,6 @@ instance ToJSON LegalConsent where
 data LoginData = LoginData
   { loginDataUsername :: Text -- ^ 
   , loginDataPassword :: Text -- ^ 
-  , loginDataMergeToken :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON LoginData where
@@ -498,22 +425,8 @@ instance ToJSON LoginDataSSO where
 
 
 -- | 
-data LoginDataSoMe = LoginDataSoMe
-  { loginDataSoMeProvider :: Text -- ^ 
-  , loginDataSoMeSomeToken :: Text -- ^ 
-  , loginDataSoMeMergeToken :: Maybe Text -- ^ 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON LoginDataSoMe where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "loginDataSoMe")
-instance ToJSON LoginDataSoMe where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "loginDataSoMe")
-
-
--- | 
 data LoginResponse = LoginResponse
   { loginResponseToken :: Text -- ^ 
-  , loginResponseSsoCode :: Maybe Text -- ^ 
   , loginResponseUuid :: UUID -- ^ 
   , loginResponseIsAdmin :: Bool -- ^ 
   } deriving (Show, Eq, Generic, Data)
@@ -895,19 +808,6 @@ instance FromJSON TemporaryAddressChangeDates where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "temporaryAddressChangeDates")
 instance ToJSON TemporaryAddressChangeDates where
   toJSON = genericToJSON (removeFieldLabelPrefix False "temporaryAddressChangeDates")
-
-
--- | 
-data UpdatePasswordData = UpdatePasswordData
-  { updatePasswordDataPassword :: Maybe Text -- ^ 
-  , updatePasswordDataConfirmPassword :: Maybe Text -- ^ 
-  , updatePasswordDataToken :: Text -- ^ 
-  } deriving (Show, Eq, Generic, Data)
-
-instance FromJSON UpdatePasswordData where
-  parseJSON = genericParseJSON (removeFieldLabelPrefix True "updatePasswordData")
-instance ToJSON UpdatePasswordData where
-  toJSON = genericToJSON (removeFieldLabelPrefix False "updatePasswordData")
 
 
 -- | 
