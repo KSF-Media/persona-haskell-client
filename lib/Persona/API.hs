@@ -118,7 +118,10 @@ formatSeparatedQueryList char = T.intercalate (T.singleton char) . map toQueryPa
 
 -- | Servant type-level API, generated from the OpenAPI spec for Persona.
 type PersonaAPI
-    =    "admin" :> "free-pass" :> ReqBody '[JSON] Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] () -- 'adminFreePassDelete' route
+    =    "account" :> "password" :> "check-token" :> ReqBody '[JSON] Text :> Verb 'POST 200 '[JSON] () -- 'accountPasswordCheckTokenPost' route
+    :<|> "account" :> "password" :> "forgot" :> ReqBody '[JSON] ForgotPasswordData :> Verb 'POST 200 '[JSON] () -- 'accountPasswordForgotPost' route
+    :<|> "account" :> "password" :> "reset" :> ReqBody '[JSON] UpdatePasswordData :> Verb 'POST 200 '[JSON] () -- 'accountPasswordResetPost' route
+    :<|> "admin" :> "free-pass" :> ReqBody '[JSON] Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] () -- 'adminFreePassDelete' route
     :<|> "admin" :> "free-pass" :> ReqBody '[JSON] FreePassInput :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'PUT 200 '[JSON] Text -- 'adminFreePassPut' route
     :<|> "admin" :> "free-passes" :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [FreePass] -- 'adminFreePassesGet' route
     :<|> "admin" :> "search" :> ReqBody '[JSON] SearchQuery :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [SearchResult] -- 'adminSearchPost' route
@@ -179,7 +182,10 @@ newtype PersonaClientError = PersonaClientError ClientError
 -- is a backend that executes actions by sending HTTP requests (see @createPersonaClient@). Alternatively, provided
 -- a backend, the API can be served using @runPersonaServer@.
 data PersonaBackend m = PersonaBackend
-  { adminFreePassDelete :: Text -> Maybe UUID -> Maybe Text -> m (){- ^ Marks a free pass as being revoked so that it can't be used anymore. Currently, revoked free passes can't be reinstated through Persona API (though it's possible to do so with an SQL query). -}
+  { accountPasswordCheckTokenPost :: Text -> m (){- ^ The second step in the forgotten password reset procedure is to ensure that the password reset token is still valid. Each token can be used at most once and it is valid for a limited duration. -}
+  , accountPasswordForgotPost :: ForgotPasswordData -> m (){- ^ This is the starting point of the forgotten password recovery process. It sends a password reset link with a pasword reset token to the given user's email address if such user and email address exist. -}
+  , accountPasswordResetPost :: UpdatePasswordData -> m (){- ^ The final step of the forgotten password reset procedure performs password reset with a token obtained from the email message sent by the POST /password/forgot endpoint and the new password and its confirmation. -}
+  , adminFreePassDelete :: Text -> Maybe UUID -> Maybe Text -> m (){- ^ Marks a free pass as being revoked so that it can't be used anymore. Currently, revoked free passes can't be reinstated through Persona API (though it's possible to do so with an SQL query). -}
   , adminFreePassPut :: FreePassInput -> Maybe UUID -> Maybe Text -> m Text{- ^ Free passes can be used to temporarily bypass the paywall for individual articles. -}
   , adminFreePassesGet :: Maybe UUID -> Maybe Text -> m [FreePass]{- ^ This end point returns the list of all free passes, including those that have been expired or revoked. -}
   , adminSearchPost :: SearchQuery -> Maybe UUID -> Maybe Text -> m [SearchResult]{- ^  -}
@@ -244,7 +250,10 @@ instance MonadIO PersonaClient where
 createPersonaClient :: PersonaBackend PersonaClient
 createPersonaClient = PersonaBackend{..}
   where
-    ((coerce -> adminFreePassDelete) :<|>
+    ((coerce -> accountPasswordCheckTokenPost) :<|>
+     (coerce -> accountPasswordForgotPost) :<|>
+     (coerce -> accountPasswordResetPost) :<|>
+     (coerce -> adminFreePassDelete) :<|>
      (coerce -> adminFreePassPut) :<|>
      (coerce -> adminFreePassesGet) :<|>
      (coerce -> adminSearchPost) :<|>
@@ -322,7 +331,10 @@ runPersonaServer Config{..} backend = do
   liftIO $ Warp.runSettings warpSettings $ serve (Proxy :: Proxy PersonaAPI) (serverFromBackend backend)
   where
     serverFromBackend PersonaBackend{..} =
-      (coerce adminFreePassDelete :<|>
+      (coerce accountPasswordCheckTokenPost :<|>
+       coerce accountPasswordForgotPost :<|>
+       coerce accountPasswordResetPost :<|>
+       coerce adminFreePassDelete :<|>
        coerce adminFreePassPut :<|>
        coerce adminFreePassesGet :<|>
        coerce adminSearchPost :<|>

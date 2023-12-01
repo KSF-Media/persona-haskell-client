@@ -13,6 +13,7 @@ module Persona.Types (
   DeliveryReclamation (..),
   EntitlementAccess (..),
   FaroUser (..),
+  ForgotPasswordData (..),
   FreePass (..),
   FreePassInput (..),
   GdprConsent (..),
@@ -55,6 +56,7 @@ module Persona.Types (
   SubscriptionPayments (..),
   TemporaryAddressChange (..),
   TemporaryAddressChangeDates (..),
+  UpdatePasswordData (..),
   User (..),
   UserUpdate (..),
   UserUpdateAddress (..),
@@ -209,6 +211,17 @@ instance FromJSON FaroUser where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "faroUser")
 instance ToJSON FaroUser where
   toJSON = genericToJSON (removeFieldLabelPrefix False "faroUser")
+
+
+-- | 
+data ForgotPasswordData = ForgotPasswordData
+  { forgotPasswordDataEmail :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON ForgotPasswordData where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "forgotPasswordData")
+instance ToJSON ForgotPasswordData where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "forgotPasswordData")
 
 
 -- | 
@@ -808,6 +821,19 @@ instance FromJSON TemporaryAddressChangeDates where
   parseJSON = genericParseJSON (removeFieldLabelPrefix True "temporaryAddressChangeDates")
 instance ToJSON TemporaryAddressChangeDates where
   toJSON = genericToJSON (removeFieldLabelPrefix False "temporaryAddressChangeDates")
+
+
+-- | 
+data UpdatePasswordData = UpdatePasswordData
+  { updatePasswordDataPassword :: Text -- ^ 
+  , updatePasswordDataConfirmPassword :: Text -- ^ 
+  , updatePasswordDataToken :: Text -- ^ 
+  } deriving (Show, Eq, Generic, Data)
+
+instance FromJSON UpdatePasswordData where
+  parseJSON = genericParseJSON (removeFieldLabelPrefix True "updatePasswordData")
+instance ToJSON UpdatePasswordData where
+  toJSON = genericToJSON (removeFieldLabelPrefix False "updatePasswordData")
 
 
 -- | 
