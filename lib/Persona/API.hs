@@ -127,6 +127,7 @@ type PersonaAPI
     :<|> "admin" :> "search" :> ReqBody '[JSON] SearchQuery :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [SearchResult] -- 'adminSearchPost' route
     :<|> "admin" :> "transfer-passive-subscribers" :> Capture "listid" Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] Value -- 'adminTransferPassiveSubscribersListidPost' route
     :<|> "admin" :> "user" :> ReqBody '[JSON] AdminNewUser :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] LoginResponse -- 'adminUserPost' route
+    :<|> "admin" :> "user" :> Capture "uuid" UUID :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] () -- 'adminUserUuidDelete' route
     :<|> "entitlements" :> "allow" :> ReqBody '[JSON] Integer :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'DELETE 200 '[JSON] [Value] -- 'entitlementsAllowDelete' route
     :<|> "entitlements" :> "allow" :> QueryParam "ip" Text :> QueryParam "paper" Text :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'GET 200 '[JSON] [PersistedEntitlementAccess] -- 'entitlementsAllowGet' route
     :<|> "entitlements" :> "allow" :> ReqBody '[JSON] EntitlementAccess :> Header "AuthUser" UUID :> Header "Authorization" Text :> Verb 'POST 200 '[JSON] [Value] -- 'entitlementsAllowPost' route
@@ -191,6 +192,7 @@ data PersonaBackend m = PersonaBackend
   , adminSearchPost :: SearchQuery -> Maybe UUID -> Maybe Text -> m [SearchResult]{- ^  -}
   , adminTransferPassiveSubscribersListidPost :: Text -> Maybe UUID -> Maybe Text -> m Value{- ^ Passive subscribers/members/customers are users who don't have active entitlements and haven't opted out from email marketing. For the given list (audience) ID, this endpoint transfers the list of passive subscribers from Kayak to Mailchimp (via Faro). -}
   , adminUserPost :: AdminNewUser -> Maybe UUID -> Maybe Text -> m LoginResponse{- ^  -}
+  , adminUserUuidDelete :: UUID -> Maybe UUID -> Maybe Text -> m (){- ^  -}
   , entitlementsAllowDelete :: Integer -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
   , entitlementsAllowGet :: Maybe Text -> Maybe Text -> Maybe UUID -> Maybe Text -> m [PersistedEntitlementAccess]{- ^  -}
   , entitlementsAllowPost :: EntitlementAccess -> Maybe UUID -> Maybe Text -> m [Value]{- ^  -}
@@ -259,6 +261,7 @@ createPersonaClient = PersonaBackend{..}
      (coerce -> adminSearchPost) :<|>
      (coerce -> adminTransferPassiveSubscribersListidPost) :<|>
      (coerce -> adminUserPost) :<|>
+     (coerce -> adminUserUuidDelete) :<|>
      (coerce -> entitlementsAllowDelete) :<|>
      (coerce -> entitlementsAllowGet) :<|>
      (coerce -> entitlementsAllowPost) :<|>
@@ -340,6 +343,7 @@ runPersonaServer Config{..} backend = do
        coerce adminSearchPost :<|>
        coerce adminTransferPassiveSubscribersListidPost :<|>
        coerce adminUserPost :<|>
+       coerce adminUserUuidDelete :<|>
        coerce entitlementsAllowDelete :<|>
        coerce entitlementsAllowGet :<|>
        coerce entitlementsAllowPost :<|>
