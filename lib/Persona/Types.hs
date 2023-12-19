@@ -176,6 +176,7 @@ data DeliveryReclamation = DeliveryReclamation
   , deliveryReclamationPublicationDate :: Day -- ^ 
   , deliveryReclamationClaim :: Text -- ^ 
   , deliveryReclamationDoorCode :: Maybe Text -- ^ Door code for redelivery
+  , deliveryReclamationReason :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON DeliveryReclamation where
@@ -456,6 +457,7 @@ data NewDeliveryReclamation = NewDeliveryReclamation
   , newDeliveryReclamationPublicationDate :: Day -- ^ 
   , newDeliveryReclamationClaim :: Text -- ^ 
   , newDeliveryReclamationDoorCode :: Maybe Text -- ^ Door code for possible redelivery
+  , newDeliveryReclamationReason :: Maybe Text -- ^ 
   } deriving (Show, Eq, Generic, Data)
 
 instance FromJSON NewDeliveryReclamation where
